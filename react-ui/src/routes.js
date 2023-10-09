@@ -37,6 +37,21 @@ export const renderRoutes = (routes = []) => (
 const routes = [
     {
         exact: true,
+        path: '/public/user/data',
+        component: lazy(() => import('./views/extra/user-data'))
+    },
+    {
+        exact: true,
+        path: '/public/job/apply',
+        component: lazy(() => import('./views/extra/application'))
+    },
+    {
+        exact: true,
+        path: '/public/job/list',
+        component: lazy(() => import('./views/extra/job-list'))
+    },
+    {
+        exact: true,
         guard: GuestGuard,
         path: '/auth/signin',
         component: lazy(() => import('./views/auth/signin/SignIn1'))
@@ -136,6 +151,11 @@ const routes = [
                 path: '/opportunity/add',
                 component: lazy(() => import('./views/extra/Opportunity'))
             },
+            {
+            exact: true,
+            path: '/job/list',
+            component: lazy(() => import('./views/extra/job-list'))
+        },
             {
                 path: '*',
                 exact: true,

@@ -21,13 +21,8 @@ const MapWithAMarkerClusterer = compose(
     withScriptjs,
     withGoogleMap
 )((props) => (
-    <GoogleMap defaultZoom={3} defaultCenter={{ lat: 25.0391667, lng: 121.525 }}>
-        <MarkerClusterer onClick={props.onMarkerClustererClick} averageCenter enableRetinaIcons gridSize={60}>
-            {props.markers.map((marker) => (
-                <Marker key={marker.photo_id} position={{ lat: marker.latitude, lng: marker.longitude }} />
-            ))}
-        </MarkerClusterer>
-    </GoogleMap>
+    <div></div>
+ 
 ));
 
 export default MapWithAMarkerClusterer;

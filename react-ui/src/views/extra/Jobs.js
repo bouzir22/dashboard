@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Table } from 'react-bootstrap';
+import { Card, Table,Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Jobs = () => {
 //fetch jobs
@@ -14,11 +15,16 @@ const Jobs = () => {
         </span>
       </Card.Header>
       <Card.Body>
+      <Link to="/opportunity/add">
+  <Button className="btn-rounded text-capitalize" variant="success">
+    success
+  </Button>
+</Link>
         <Table responsive hover>
           <thead>
             <tr>
               <th>#</th>
-              <th>Job Reference</th>
+              <th> </th>
               <th>Job Title</th>
               <th>Publish Date</th>
               <th>Deadline</th>

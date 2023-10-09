@@ -27,25 +27,7 @@ const StyledMapWithAnInfoBox = compose(
     withScriptjs,
     withGoogleMap
 )((props) => (
-    <GoogleMap defaultZoom={5} defaultCenter={props.center} defaultOptions={{ styles: fancyMapStyles }}>
-        <InfoBox
-            defaultPosition={new google.maps.LatLng(props.center.lat, props.center.lng)}
-            options={{ closeBoxURL: ``, enableEventPropagation: true }}
-        >
-            <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `12px` }}>
-                <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>Hello, India!</div>
-            </div>
-        </InfoBox>
-        <Marker position={{ lat: 23.0204978, lng: 72.4396583 }} onClick={props.onToggleOpen}>
-            {props.isOpen && (
-                <InfoBox onCloseClick={props.onToggleOpen} options={{ closeBoxURL: ``, enableEventPropagation: true }}>
-                    <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `12px` }}>
-                        <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>Hello, Gujarat!</div>
-                    </div>
-                </InfoBox>
-            )}
-        </Marker>
-    </GoogleMap>
+ <div></div>
 ));
 
 export default StyledMapWithAnInfoBox;

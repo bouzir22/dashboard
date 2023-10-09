@@ -5,9 +5,8 @@ const MapWithAMarker = compose(
     withScriptjs,
     withGoogleMap
 )((props) => (
-    <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.5274851, lng: 77.1389452 }}>
-        <Marker position={{ lat: 28.5274851, lng: 77.1389452 }} />
-    </GoogleMap>
+    <div></div>
+ 
 ));
 
 export default MapWithAMarker;
