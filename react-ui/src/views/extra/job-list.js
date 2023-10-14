@@ -4,7 +4,25 @@ import { Link } from 'react-router-dom';
  
 
 const JobList = () => {
-    const [isBasic, setIsBasic] = useState(false);
+    const jobOpportunities = [
+        {
+            title: 'Software Engineer',
+            description: 'We are looking for a talented and experienced Software Engineer to join our team. The ideal candidate will have a strong understanding of software development principles and practices, as well as experience with Java, Python, and/or C++.',
+        },
+        {
+            title: 'Web Developer',
+            description: 'We are looking for a Web Developer to join our team. The ideal candidate will have experience with HTML, CSS, and JavaScript, as well as experience with React, Angular, and/or Vue.js.',
+        },
+        {
+            title: 'Data Scientist',
+            description: 'We are looking for a Data Scientist to join our team. The ideal candidate will have a strong understanding of data science principles and practices, as well as experience with Python, R, and/or SQL.',
+        },
+    ];
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = () => {
+        // Filter the job list based on the search query
+    };
     const [isMultiTarget, setIsMultiTarget] = useState([]);
     const [accordionKey, setAccordionKey] = useState(1);
 
@@ -23,103 +41,53 @@ const JobList = () => {
  
     return (
         <React.Fragment>
+               <Row>
+                <Col sm={12}>
+                <div className="input-group mb-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search for jobs..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <Button className="btn btn-primary" onClick={handleSearch}>Search</Button>
+                        </div>
+                </Col>
+            </Row>
             <Row>
             
             </Row>
             <Row className="btn-page">
              
                 <Col sm={12} className="accordion">
-                    <h5>Accordion Example</h5>
+                    <h5>Available jobs</h5>
                     <hr />
-                    <Card className="mt-2">
-                        <Card.Header>
-                            <Card.Title as="h5">
-                                <Link
-                                    to="#"
-                                    onClick={() => setAccordionKey(accordionKey !== 1 ? 1 : 0)}
-                                    aria-controls="accordion1"
-                                    aria-expanded={accordionKey === 1}
-                                >
-                                    Collapsible Group Item #1
-                                </Link>
-                            </Card.Title>
-                        </Card.Header>
-                        <Collapse in={accordionKey === 1}>
-                            <div id="accordion1">
-                                <Card.Body>
-                                    <Card.Text>
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3
-                                        wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                                        assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer
-                                        farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
-                                        labore sustainable VHS.
-                                    </Card.Text>
-                                </Card.Body>
-                            </div>
-                        </Collapse>
-                    </Card>
-                    <Card className="mt-2">
-                        <Card.Header>
-                            <Card.Title as="h5">
-                                <Link
-                                    to="#"
-                                    onClick={() => setAccordionKey(accordionKey !== 2 ? 2 : 0)}
-                                    aria-controls="accordion2"
-                                    aria-expanded={accordionKey === 2}
-                                >
-                                    Collapsible Group Item #2
-                                </Link>
-                            </Card.Title>
-                        </Card.Header>
-                        <Collapse in={accordionKey === 2}>
-                            <div id="accordion2">
-                                <Card.Body>
-                                    <Card.Text>
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3
-                                        wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                                        assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer
-                                        farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
-                                        labore sustainable VHS.
-                                    </Card.Text>
-                                </Card.Body>
-                            </div>
-                        </Collapse>
-                    </Card>
-                    <Card className="mt-2">
-                        <Card.Header>
-                            <Card.Title as="h5">
-                                <Link
-                                    to="#"
-                                    onClick={() => setAccordionKey(accordionKey !== 3 ? 3 : 0)}
-                                    aria-controls="accordion3"
-                                    aria-expanded={accordionKey === 3}
-                                >
-                                    Collapsible Group Item #3
-                                </Link>
-                            </Card.Title>
-                        </Card.Header>
-                        <Collapse in={accordionKey === 3}>
-                            <div id="accordion3">
-                                <Card.Body>
-                                    <Card.Text>
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3
-                                        wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                                        assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer
-                                        farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
-                                        labore sustainable VHS.    <Button className="btn-icon btn-rounded btn-success"  >
-            <i className="feather icon-check-circle" />
-        </Button>
-                                    </Card.Text>
-                                </Card.Body>
-                            </div>
-                        </Collapse>
-                    </Card>
+                    {jobOpportunities.map((jobOpportunity, index) => (
+                        <Card className="mt-2" key={index}>
+                            <Card.Header>
+                                <Card.Title as="h5">
+                                    <Link
+                                        to="#"
+                                        onClick={() => setAccordionKey(accordionKey !== index + 1 ? index + 1 : 0)}
+                                        aria-controls={`accordion${index + 1}`}
+                                        aria-expanded={accordionKey === index + 1}
+                                    >
+                                        {jobOpportunity.title}
+                                    </Link>
+                                </Card.Title>
+                            </Card.Header>
+                            <Collapse in={accordionKey === index + 1}>
+                                <div id={`accordion${index + 1}`}>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            {jobOpportunity.description}
+                                        </Card.Text>
+                                    </Card.Body>
+                                </div>
+                            </Collapse>
+                        </Card>
+                    ))}
                 </Col>
             </Row>
         </React.Fragment>

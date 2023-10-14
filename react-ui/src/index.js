@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from './contexts/ConfigContext';
 import { PersistGate } from 'redux-persist/integration/react';
-
+import registerServiceWorker from "./registerServiceWorker";
 import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -23,5 +23,5 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('root')
 );
-
+registerServiceWorker()
 reportWebVitals();

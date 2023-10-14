@@ -74,7 +74,7 @@ const Opportunity = () => {
   return (
     <Card>
       <Card.Header>
-        <Card.Title as="h5">Form controls</Card.Title>
+        <Card.Title as="h5">Post new job opportunity</Card.Title>
       </Card.Header>
       <Card.Body>
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -98,7 +98,7 @@ const Opportunity = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="selectValue">
-                <Form.Label>Example select</Form.Label>
+                <Form.Label>positions</Form.Label>
                 <Form.Control
                   as="select"
                   name="selectValue"

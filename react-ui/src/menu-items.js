@@ -23,10 +23,16 @@ const menuItems = {
             children: [
                 {
                     id: 'basic',
-                    title: 'Components',
+                    title: 'Manegement',
                     type: 'collapse',
                     icon: 'feather icon-box',
                     children: [
+                        {
+                            id: 'button',
+                            title: 'Users',
+                            type: 'item',
+                            url: '/users/list'
+                        },
                         {
                             id: 'button',
                             title: 'Button',

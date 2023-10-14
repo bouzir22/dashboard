@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, FormControl, DropdownButton, Dropdown } from 'react-bootstrap';
-
+import { useParams } from 'react-router-dom';
 const UserData = () => {
     const [validated, setValidated] = useState(false);
     const [validatedTooltip, setValidatedTooltip] = useState(false);
@@ -35,13 +35,49 @@ const UserData = () => {
         setSupportedFile(!!event.target.value);
     };
 
+ 
+        const { id } = useParams(); // Get the ID from the URL using useParams
+    
+     
+        const [user, setUser] = useState({
+            firstName: '',
+            lastName: '',
+            username: '',
+            email: '',
+            phoneNumber: '',
+            linkedinProfile: '',
+            state: '',
+            city: '',
+            zip: '',
+        });
+    
+        // Function to fetch user data based on the ID
+        const fetchUserData = async (userId) => {
+            try {
+                // Replace this with your actual API request to fetch user data
+                const response = await fetch(`/api/users/${userId}`);
+                const userData = await response.json();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+    
+        // Use useEffect to fetch user data when the component mounts and when the ID changes
+        useEffect(() => {
+            if (id) {
+                fetchUserData(id);
+            }
+        }, [id]);
+    
+
     return (
         <React.Fragment>
             <Row>
-            <Col sm={12}>
+            <Col sm={12} md={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Validation</Card.Title>
+                            <Card.Title as="h5">Additional data</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Form noValidate validated={validated}>
@@ -129,7 +165,7 @@ const UserData = () => {
                                 </Form.Group>
                                 <InputGroup className="mb-3 cust-file-button">
                                         <InputGroup.Prepend>
-                                            <Button id="custom-addons7">Button</Button>
+                                            <Button id="custom-addons7">Resume</Button>
                                         </InputGroup.Prepend>
                                         <div className="custom-file">
                                             <Form.Control
@@ -143,7 +179,7 @@ const UserData = () => {
                                             </Form.Label>
                                         </div>
                                     </InputGroup>
-                                <Button onClick={(e) => handleSubmit(e)}>Submit form</Button>
+                                <Button variant='warning' onClick={(e) => handleSubmit(e)}>Update </Button>
                             </Form>
                         </Card.Body>
                     </Card>

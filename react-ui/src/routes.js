@@ -37,6 +37,11 @@ export const renderRoutes = (routes = []) => (
 const routes = [
     {
         exact: true,
+        path: '/public/application/preview',
+        component: lazy(() => import('./views/extra/application-preview'))
+    },
+    {
+        exact: true,
         path: '/public/user/data',
         component: lazy(() => import('./views/extra/user-data'))
     },
@@ -150,12 +155,27 @@ const routes = [
                 exact: true,
                 path: '/opportunity/add',
                 component: lazy(() => import('./views/extra/Opportunity'))
+            },    {
+                exact: true,
+                path: '/application/preview',
+                component: lazy(() => import('./views/extra/application-preview'))
             },
             {
             exact: true,
             path: '/job/list',
             component: lazy(() => import('./views/extra/job-list'))
-        },
+            },    
+          {
+            exact: true,
+            path: '/opportunity/preview',
+            component: lazy(() => import('./views/extra/opportunity-preview'))
+           },
+           {
+            exact: true,
+            path: '/users/list',
+            component: lazy(() => import('./views/extra/users'))
+           },
+     
             {
                 path: '*',
                 exact: true,
