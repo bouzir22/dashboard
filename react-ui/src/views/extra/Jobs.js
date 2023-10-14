@@ -17,19 +17,18 @@ const Jobs = () => {
       <Card.Body>
       <Link to="/opportunity/add">
   <Button className="btn-rounded text-capitalize" variant="success">
-    success
+    apply
   </Button>
 </Link>
         <Table responsive hover>
           <thead>
             <tr>
               <th>#</th>
-              <th> </th>
               <th>Job Title</th>
               <th>Publish Date</th>
               <th>Deadline</th>
-              <th>blayes</th>
-              <th>Nombre of Applies</th>
+              <th>availability</th>
+              <th>Number of Applications</th>
             </tr>
           </thead>
           <tbody>

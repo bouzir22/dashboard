@@ -156,6 +156,11 @@ const routes = [
             path: '/job/list',
             component: lazy(() => import('./views/extra/job-list'))
         },
+        {
+            exact: true,
+            path: '/application/preview',
+            component: lazy(() => import('./views/extra/application-preview'))
+        },
             {
                 path: '*',
                 exact: true,
