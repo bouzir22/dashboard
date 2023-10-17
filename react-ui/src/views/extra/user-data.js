@@ -75,8 +75,10 @@ const UserData = () => {
         <React.Fragment>
             <Row>
             <Col sm={12} md={12}>
+            <Col sm={12} md={12}>
                     <Card>
                         <Card.Header>
+                            <Card.Title as="h5">Additional data</Card.Title>
                             <Card.Title as="h5">Additional data</Card.Title>
                         </Card.Header>
                         <Card.Body>
@@ -165,6 +167,7 @@ const UserData = () => {
                                 </Form.Group>
                                 <InputGroup className="mb-3 cust-file-button">
                                         <InputGroup.Prepend>
+                                            <Button id="custom-addons7">Resume</Button>
                                             <Button id="custom-addons7">Resume</Button>
                                         </InputGroup.Prepend>
                                         <div className="custom-file">
