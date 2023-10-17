@@ -75,7 +75,6 @@ const UserData = () => {
         <React.Fragment>
             <Row>
             <Col sm={12} md={12}>
-            <Col sm={12} md={12}>
                     <Card>
                         <Card.Header>
                             <Card.Title as="h5">Additional data</Card.Title>
