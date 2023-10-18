@@ -33,7 +33,7 @@ export const renderRoutes = (routes = []) => (
         </Switch>
     </Suspense>
 );
-
+// todo:lazy
 const routes = [
     {
         exact: true,
@@ -175,7 +175,11 @@ const routes = [
             path: '/users/list',
             component: lazy(() => import('./views/extra/users'))
            },
-     
+           {
+            exact: true,
+            path: '/user/details',
+            component: lazy(() => import('./views/extra/user-details'))
+        },
             {
                 path: '*',
                 exact: true,

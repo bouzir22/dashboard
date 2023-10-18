@@ -59,7 +59,7 @@ const Users  = (props) => {
                                     </h6>
                                 </td>
                                 <td>
-                                    <Link to="user/data" className="label theme-bg2 text-white f-12">
+                                    <Link to="/user/details" className="label theme-bg2 text-white f-12">
                                         View
                                     </Link>
                                     <Link to="#" className="label theme-bg text-white f-12">

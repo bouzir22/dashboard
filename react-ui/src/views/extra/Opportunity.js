@@ -3,6 +3,8 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios'; 
 const Opportunity = () => {
   const [validated, setValidated] = useState(false);
+  //setFormData access to state value
+  //form data hold state value
   const [formData, setFormData] = useState({
     title: '',
     select_value: '1',
@@ -10,6 +12,7 @@ const Opportunity = () => {
   });
 
   const handleSubmit = (event) => {
+    //prevent page reload
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -21,16 +24,14 @@ const Opportunity = () => {
 
     setValidated(false);
 
-    console.log(formData);
-
-
-
-
-
-
-    
+    console.log(formData);    
     try {
         // Send an HTTP POST request to your API endpoint
+      // if post (url,body)
+      //if get get(url)
+       //let var
+       //axios.get(url).then(data => var=data)
+
         const response =  axios.post('http://localhost:8000/submit-opportunity', formData);
   
         // Handle the response (e.g., show success message, redirect, etc.)
@@ -39,28 +40,6 @@ const Opportunity = () => {
         // Handle any errors (e.g., show error message)
         console.error('Error:', error);
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
   };
 
   const handleInputChange = (event) => {
