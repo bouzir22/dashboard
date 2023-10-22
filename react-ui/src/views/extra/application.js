@@ -12,11 +12,12 @@ const Application = () => {
         linkedinProfile: '',
         state: '',
         city: '',
-        stateText: '',
+        state: '',
         zip: '',
-        agreeToTerms: false,
         selectedFile: null,
     });
+
+    const [validationErrors, setValidationErrors] = useState({}); // State to hold validation errors
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -28,33 +29,55 @@ const Application = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Create an object from the form data
-        const dataToSend = {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            username: formData.username,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
-            linkedinProfile: formData.linkedinProfile,
-            state: formData.state,
-            city: formData.city,
-            stateText: formData.stateText,
-            zip: formData.zip,
-            agreeToTerms: formData.agreeToTerms,
-            selectedFile: formData.selectedFile,
-            // Add more fields as needed
+
+        // Validate the form before submission
+        if (validateForm()) {
+            // Proceed with submitting data
+            const dataToSend = {
+                // ... (existing dataToSend)
+            };
+
+            try {
+                // Send the data to your API endpoint
+                const response = await axios.post('http://localhost:8000/submit_applicant', dataToSend);
+                console.log('Response from API:', response.data);
+                // You can also handle success feedback here
+            } catch (error) {
+                console.error('Error sending data to API:', error);
+                // You can handle errors and provide feedback to the user
+            }
+        }
+    };
+
+    const validateForm = () => {
+        // Define validation rules for each field
+        const rules = {
+            firstName: /^[a-zA-Z\s]*$/, // Alphabetic characters and spaces only
+            lastName: /^[a-zA-Z\s]*$/,
+            username: /^\w+$/, // Alphanumeric characters and underscores only
+            email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Basic email validation
+            phoneNumber: /^\d{8}$/, // 10-digit phone number
+            linkedinProfile: /^https?:\/\/(www\.)?linkedin\.com\/.*/, // Basic URL validation
+            city: /^[a-zA-Z\s]*$/,
+            state: /^[a-zA-Z\s]*$/,
+            zip: /^\d{5}$/, // 5-digit ZIP code
         };
 
-        try {
-            // Send the data to your API endpoint
-            const response =  axios.post('YOUR_API_ENDPOINT', dataToSend);
-            console.log('Response from API:', response.data);
-            // You can also handle success feedback here
-        } catch (error) {
-            console.error('Error sending data to API:', error);
-            // You can handle errors and provide feedback to the user
+        // Create an object to hold validation errors
+        const errors = {};
+
+        // Check each field against its corresponding validation rule
+        for (const field in rules) {
+            if (!rules[field].test(formData[field])) {
+                errors[field] = `Invalid ${field}`;
+            }
         }
+
+        // Update the state with the validation errors
+        setValidationErrors(errors);
+
+        // Check if there are any validation errors
+        return Object.keys(errors).length === 0;
     };
 
     return (
@@ -76,8 +99,9 @@ const Application = () => {
                                             name="firstName"
                                             value={formData.firstName}
                                             onChange={handleChange}
+                                            isInvalid={validationErrors.firstName}
                                         />
-                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.firstName}</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustom02">
                                         <Form.Label>Last name</Form.Label>
@@ -87,8 +111,9 @@ const Application = () => {
                                             name="lastName"
                                             value={formData.lastName}
                                             onChange={handleChange}
+                                            isInvalid={validationErrors.lastName}
                                         />
-                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.lastName}</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustomUsername">
                                         <Form.Label>Username</Form.Label>
@@ -104,8 +129,9 @@ const Application = () => {
                                                 placeholder="Username"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                isInvalid={validationErrors.username}
                                             />
-                                            <Form.Control.Feedback type="invalid">Please choose a username.</Form.Control.Feedback>
+                                            <Form.Control.Feedback type="invalid">{validationErrors.username}</Form.Control.Feedback>
                                         </InputGroup>
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridEmail">
@@ -116,7 +142,9 @@ const Application = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             placeholder="Enter email"
+                                            isInvalid={validationErrors.email}
                                         />
+                                        <Form.Control.Feedback type="invalid">{validationErrors.email}</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustom02">
                                         <Form.Label>Phone number</Form.Label>
@@ -127,8 +155,9 @@ const Application = () => {
                                             value={formData.phoneNumber}
                                             onChange={handleChange}
                                             placeholder="Phone number"
+                                            isInvalid={validationErrors.phoneNumber}
                                         />
-                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.phoneNumber}</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="4" controlId="validationCustom02">
                                         <Form.Label>LinkedIn profile</Form.Label>
@@ -139,22 +168,24 @@ const Application = () => {
                                             value={formData.linkedinProfile}
                                             onChange={handleChange}
                                             placeholder="LinkedIn profile"
+                                            isInvalid={validationErrors.linkedinProfile}
                                         />
-                                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.linkedinProfile}</Form.Control.Feedback>
                                     </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formGridState">
                                         <Form.Label>State</Form.Label>
                                         <Form.Control
-                                            as="select"
+                                        required
+                                            type="text"
                                             name="state"
                                             value={formData.state}
                                             onChange={handleChange}
+                                            isInvalid={validationErrors.state}
                                         >
-                                            <option>Choose...</option>
-                                            <option>...</option>
                                         </Form.Control>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.state}</Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridCity">
                                         <Form.Label>City</Form.Label>
@@ -165,23 +196,12 @@ const Application = () => {
                                             onChange={handleChange}
                                             placeholder="City"
                                             required
+                                            isInvalid={validationErrors.city}
                                         />
-                                        <Form.Control.Feedback type="invalid">Please provide a valid city.</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.city}</Form.Control.Feedback>
                                     </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
-                                    <Form.Group as={Col} md="3" controlId="validationCustom04">
-                                        <Form.Label>State</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="stateText"
-                                            value={formData.stateText}
-                                            onChange={handleChange}
-                                            placeholder="State"
-                                            required
-                                        />
-                                        <Form.Control.Feedback type="invalid">Please provide a valid state.</Form.Control.Feedback>
-                                    </Form.Group>
                                     <Form.Group as={Col} md="3" controlId="validationCustom05">
                                         <Form.Label>Zip</Form.Label>
                                         <Form.Control
@@ -191,20 +211,11 @@ const Application = () => {
                                             onChange={handleChange}
                                             placeholder="Zip"
                                             required
+                                            isInvalid={validationErrors.zip}
                                         />
-                                        <Form.Control.Feedback type="invalid">Please provide a valid zip.</Form.Control.Feedback>
+                                        <Form.Control.Feedback type="invalid">{validationErrors.zip}</Form.Control.Feedback>
                                     </Form.Group>
                                 </Form.Row>
-                                <Form.Group>
-                                    <Form.Check
-                                        required
-                                        label="Agree to terms and conditions"
-                                        feedback="You must agree before submitting."
-                                        name="agreeToTerms"
-                                        checked={formData.agreeToTerms}
-                                        onChange={handleChange}
-                                    />
-                                </Form.Group>
                                 <InputGroup className="mb-3 cust-file-button">
                                     <InputGroup.Prepend>
                                         <Button id="custom-addons7">Button</Button>
@@ -219,7 +230,7 @@ const Application = () => {
                                             onChange={handleChange}
                                         />
                                         <Form.Label className="custom-file-label" htmlFor="validatedCustomFile3">
-                                            Choose file
+                                             Choose file ("only pdf")
                                         </Form.Label>
                                     </div>
                                 </InputGroup>

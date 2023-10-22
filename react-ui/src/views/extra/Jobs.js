@@ -1,25 +1,25 @@
-import React from 'react';
-import { Card, Table,Button } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Card, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Jobs = () => {
-//fetch jobs
+  const [jobs, setJobs] = useState([]);
 
+  useEffect(() => {
+    // Fetch job data from your Django API endpoint
+    axios.get('http://localhost:8000/opportunities')
+      .then((response) => {
+        setJobs(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching job data:', error);
+      });
+  }, []);
 
   return (
     <Card>
-      <Card.Header>
-        <Card.Title as="h5">Hover Table</Card.Title>
-        <span className="d-block m-t-5">
-          use props <code>hover</code> with <code>Table</code> component
-        </span>
-      </Card.Header>
       <Card.Body>
-      <Link to="/opportunity/add">
-  <Button className="btn-rounded text-capitalize" variant="success">
-    apply
-  </Button>
-</Link>
         <Table responsive hover>
           <thead>
             <tr>
@@ -27,31 +27,26 @@ const Jobs = () => {
               <th>Job Title</th>
               <th>Publish Date</th>
               <th>Deadline</th>
-              <th>availability</th>
-              <th>Number of Applications</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-            </tr>
+            {jobs.map((job, index) => (
+              <tr key={job.id}>
+                <th scope="row">{index + 1}</th>
+                <td>{job.title}</td>
+                <td>{job.created_at}</td>
+                <td>{job.due_date}</td>
+                <td>{job.status === 'Open' ? 'Open' : 'Closed'}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
+        <Link to="/opportunity/add">
+          <Button className="btn-rounded text-capitalize" variant="success">
+            add new job
+          </Button>
+        </Link>
       </Card.Body>
     </Card>
   );

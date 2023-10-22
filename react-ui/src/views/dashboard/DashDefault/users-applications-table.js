@@ -1,8 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function ApplicationTable({ applications }) {
-  const [sortedApplications, setSortedApplications] = useState([...applications]);
-  const [filter, setFilter] = useState('all'); // Initial filter is set to 'all'
+function ApplicationTable({ updateApplications }) {
+  const [applications, setApplications] = useState([]);
+  const [sortedApplications, setSortedApplications] = useState([]);
+  const [opportunities, setOpportunities] = useState([]); // Added state for opportunities
+  const [filter, setFilter] = useState('all');
+
+  // Fetch application data from the backend when the component mounts
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/applications/') // Update this URL to match your API endpoint
+      .then((response) => {
+        setApplications(response.data);
+        setSortedApplications(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching applications:', error);
+      });
+
+    // Fetch opportunity data from the backend
+    axios.get('http://localhost:8000/api/opportunities/') // Update this URL to match your API endpoint
+      .then((response) => {
+        setOpportunities(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching opportunities:', error);
+      });
+  }, []);
+
+  // Function to accept an application
+  const acceptApplication = (applicationId) => {
+    // Make an API request to accept the application
+    axios
+      .post(`/api/accept-application/${applicationId}`)
+      .then((response) => {
+        // Update the applications with the new data
+        updateApplications(response.data);
+      })
+      .catch((error) => {
+        console.error('Error accepting application:', error);
+      });
+  };
 
   // Handle sorting by application score
   const handleSort = () => {
@@ -28,12 +66,20 @@ function ApplicationTable({ applications }) {
       <table>
         <tbody>
           {sortedApplications.map((application, index) => {
-            // Apply filtering based on the selected filter
             if (filter === 'all' || application.status === filter) {
+              const opportunity = opportunities.find((opp) => opp.id === application.opportunity);
               return (
                 <tr className="unread" key={index}>
-                  {/* Render table rows as before */}
-                  {/* ... */}
+                  <td>{application.applicant.name}</td>
+                  <td>{application.score}</td>
+                  <td>{opportunity ? opportunity.title : 'Opportunity not found'}</td>
+                  <td>
+                    {application.status === 'approve' ? (
+                      'Approved'
+                    ) : (
+                      <button onClick={() => acceptApplication(application.id)}>Approve</button>
+                    )}
+                  </td>
                 </tr>
               );
             } else {

@@ -159,7 +159,7 @@ const NavRight = () => {
                                     </Link>
                                 </ListGroup.Item>
                                 <ListGroup.Item as="li" bsPrefix=" ">
-                                    <Link to="#" className="dropdown-item">
+                                    <Link to="/public/user/data" className="dropdown-item">
                                         <i className="feather icon-user" /> Profile
                                     </Link>
                                 </ListGroup.Item>
@@ -174,7 +174,7 @@ const NavRight = () => {
                                     </Link>
                                 </ListGroup.Item>
                                 <ListGroup.Item as="li" bsPrefix=" ">
-                                    <Link to="#" className="dropdown-item" onClick={handleLogout}>
+                                    <Link to="/auth/signin-2" className="dropdown-item" onClick={handleLogout}>
                                         <i className="feather icon-log-out" /> Logout
                                     </Link>
                                 </ListGroup.Item>

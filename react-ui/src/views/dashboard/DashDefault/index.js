@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
- 
-import { Row, Col, Card, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
+import { Row, Col, Card } from 'react-bootstrap';
 import AmChartEarnings from './chart/AmChartEarnings';
 import AmChartStatistics6 from './chart/AmChartStatistics6';
-
 import avatar1 from '../../../assets/images/user/avatar-1.jpg';
-import avatar2 from '../../../assets/images/user/avatar-2.jpg';
-import avatar3 from '../../../assets/images/user/avatar-3.jpg';
 import UsersApplications from './usersApplications';
-import JobList from '../../extra/job-list';
-import JobListSummary from './joblist';
+import Jobs from '../../extra/Jobs';
 
-const DashDefault = () => { const applications =useState(()=>[{userNname:"test",score:"test"}])
+const DashDefault = () => {
+    const applications = useState(() => [{ userNname: "test", score: "test" }]);
 
     return (
         <React.Fragment>
@@ -28,8 +22,7 @@ const DashDefault = () => { const applications =useState(()=>[{userNname:"test",
                                         <i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> 200
                                     </h3>
                                 </div>
-
-                                <div className="col-3 text-right">
+                                <div className="col-3 text right">
                                     <p className="m-b-0">50%</p>
                                 </div>
                             </div>
@@ -56,8 +49,7 @@ const DashDefault = () => { const applications =useState(()=>[{userNname:"test",
                                         <i className="feather icon-arrow-down text-c-red f-30 m-r-5" /> 30
                                     </h3>
                                 </div>
-
-                                <div className="col-3 text-right">
+                                <div className="col-3 text right">
                                     <p className="m-b-0">36%</p>
                                 </div>
                             </div>
@@ -84,8 +76,7 @@ const DashDefault = () => { const applications =useState(()=>[{userNname:"test",
                                         <i className="feather icon-arrow-up text-c-green f-30 m-r-5" /> 355
                                     </h3>
                                 </div>
-
-                                <div className="col-3 text-right">
+                                <div className="col-3 text right">
                                     <p className="m-b-0">70%</p>
                                 </div>
                             </div>
@@ -102,7 +93,31 @@ const DashDefault = () => { const applications =useState(()=>[{userNname:"test",
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={6} xl={8}>
+            </Row>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Jobs</Card.Title>
+                        </Card.Header>
+                        <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <Jobs />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Applications</Card.Title>
+                        </Card.Header>
+                        <Card.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <UsersApplications />
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                     <Card>
                         <Card.Header>
                             <Card.Title as="h5">Statistics</Card.Title>
@@ -112,15 +127,6 @@ const DashDefault = () => { const applications =useState(()=>[{userNname:"test",
                         </Card.Body>
                     </Card>
                 </Col>
-              <JobListSummary/> 
-               <Col>
-               
-               <UsersApplications />
-               
-               
-               </Col>
-          
-       
             </Row>
         </React.Fragment>
     );
