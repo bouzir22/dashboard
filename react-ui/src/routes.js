@@ -37,7 +37,7 @@ export const renderRoutes = (routes = []) => (
 const routes = [
     {
         exact: true,
-        path: '/public/application/preview',
+        path: '/public/application/preview/:id',
         component: lazy(() => import('./views/extra/application-preview'))
     },
     {
@@ -157,9 +157,9 @@ const routes = [
                 component: lazy(() => import('./views/extra/Opportunity'))
             },    {
                 exact: true,
-                path: '/application/preview',
-                component: lazy(() => import('./views/extra/application-preview'))
-            },
+                path: '/opportunity/preview/:id', // Include a dynamic parameter ':id'
+                component: lazy(() => import('./views/extra/opportunity-preview')),
+              },
             {
             exact: true,
             path: '/job/list',

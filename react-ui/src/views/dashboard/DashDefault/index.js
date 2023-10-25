@@ -6,6 +6,8 @@ import avatar1 from '../../../assets/images/user/avatar-1.jpg';
 import UsersApplications from './usersApplications';
 import Jobs from '../../extra/Jobs';
 
+
+
 const DashDefault = () => {
     const applications = useState(() => [{ userNname: "test", score: "test" }]);
 

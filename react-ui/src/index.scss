@@ -399,5 +399,28 @@ td {
             margin-top: 8px;
         }
     }
+    // OpportunityPreview.scss
+
+.opportunity-card {
+    margin-bottom: 20px;
+  
+    .opportunity-header {
+      background-color: #f5f5f5;
+      padding: 10px;
+    }
+  
+    .opportunity-details {
+      padding: 15px;
+  
+      h5 {
+        margin-bottom: 5px;
+      }
+    }
+  
+    .btn-icon {
+      margin-right: 5px;
+    }
+  }
+  
 
 }

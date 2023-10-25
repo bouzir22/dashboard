@@ -34,8 +34,8 @@ const AmChartStatistics6 = (props) => {
                     title: 'Applicants',
                     valueField: 'sales',
                     columnWidth: 0.3,
-                    legendValueText: '$[[value]]M',
-                    balloonText: "[[title]]<br /><b style='font-size: 130%'>$[[value]]M</b>"
+                    legendValueText: '[[value]]',
+                    balloonText: "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
                 },
                 {
                     id: 'g2',
@@ -47,8 +47,8 @@ const AmChartStatistics6 = (props) => {
                     title: 'Accpted Applications ',
                     valueField: 'visits',
                     columnWidth: 0.3,
-                    legendValueText: '$[[value]]M',
-                    balloonText: "[[title]]<br /><b style='font-size: 130%'>$[[value]]M</b>"
+                    legendValueText: '[[value]]',
+                    balloonText: "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
                 },
                 {
                     id: 'g3',
@@ -57,11 +57,11 @@ const AmChartStatistics6 = (props) => {
                     fillColors: ['#04a9f5', '#049df5'],
                     fillAlphas: 1,
                     type: 'column',
-                    title: 'Users',
+                    title: 'Oppotunities',
                     valueField: 'clicks',
                     columnWidth: 0.3,
-                    legendValueText: '$[[value]]M',
-                    balloonText: "[[title]]<br /><b style='font-size: 130%'>$[[value]]M</b>"
+                    legendValueText: '[[value]]',
+                    balloonText: "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
                 }
             ],
             chartCursor: {
@@ -108,7 +108,7 @@ const AmChartStatistics6 = (props) => {
                 },
                 {
                     Year: '2017',
-                    sales: 4.5,
+                    sales: 4,
                     visits: 6,
                     clicks: 4
                 }

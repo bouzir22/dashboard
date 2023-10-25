@@ -6,7 +6,6 @@ const UserDetails = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
-        username: '',
         email: '',
         phoneNumber: '',
         linkedinProfile: '',
@@ -37,7 +36,6 @@ const UserDetails = () => {
             const dataToSend = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
-                username: formData.username,
                 email: formData.email,
                 phoneNumber: formData.phoneNumber,
                 linkedinProfile: formData.linkedinProfile,
@@ -67,7 +65,6 @@ const UserDetails = () => {
         const rules = {
             firstName: /^[a-zA-Z\s]*$/, // Alphabetic characters and spaces only
             lastName: /^[a-zA-Z\s]*$/,
-            username: /^\w+$/, // Alphanumeric characters and underscores only
             email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Basic email validation
             phoneNumber: /^\d{8}$/, // 10-digit phone number
             linkedinProfile: /^https?:\/\/(www\.)?linkedin\.com\/.*/, // Basic URL validation
@@ -127,25 +124,6 @@ const UserDetails = () => {
                                             isInvalid={validationErrors.lastName}
                                         />
                                         <Form.Control.Feedback type="invalid">{validationErrors.lastName}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-                                        <Form.Label>Username</Form.Label>
-                                        <InputGroup>
-                                            <InputGroup.Prepend>
-                                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                            </InputGroup.Prepend>
-                                            <Form.Control
-                                                type="text"
-                                                name="username"
-                                                value={formData.username}
-                                                onChange={handleChange}
-                                                placeholder="Username"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                isInvalid={validationErrors.username}
-                                            />
-                                            <Form.Control.Feedback type="invalid">{validationErrors.username}</Form.Control.Feedback>
-                                        </InputGroup>
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridEmail">
                                         <Form.Label>Email</Form.Label>

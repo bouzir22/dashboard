@@ -28,7 +28,7 @@ const RestLogin = ({ className, ...rest }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post(API_SERVER + 'users/login', {
+                            .post('http://localhost:8000/api/login/', {
                                 password: values.password,
                                 email: values.email
                             })

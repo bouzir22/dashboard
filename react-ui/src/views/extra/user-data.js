@@ -2,61 +2,111 @@ import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 
-const Application = () => {
+const UserData = () => {
     const [formData, setFormData] = useState({
+        username: '',
         first_name: '',
         last_name: '',
-        username: '',
         email: '',
+        password: '',
+        confirmPassword: '', // New field for password confirmation
         phone_number: '',
         linkedin_profile: '',
         state: '',
         city: '',
         zip_code: '',
-        selected_file: null,
+        document: null,
     });
 
     const [validationErrors, setValidationErrors] = useState({}); // State to hold validation errors
+    const [base64String, setBase64String] = useState('');
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                const dataUrl = reader.result;
+                const base64Data = dataUrl.split(',')[1];
+                setBase64String(base64Data);
+            };
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : files ? files[0] : value,
-        }));
+        if (name === 'document') {
+            // Handle document input separately
+            setFormData((prevData) => ({
+                ...prevData,
+                document: files[0], // Set the document field to the selected file
+            }));
+        } else {
+            // Handle other inputs
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: type === 'checkbox' ? checked : value,
+            }));
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log('Data to send:', formData);
-
         // Validate the form before submission
         if (validateForm()) {
             try {
-                // Send the data to your API endpoint
-                const response = await axios.post('http://localhost:8000/submit_applicant', formData);
-                console.log('Response from API:', response.data);
+                // Prepare the data for submission
+                const dataToSend = {
+                    username: formData.username,
+                    first_name: formData.first_name,
+                    last_name: formData.last_name,
+                    email: formData.email,
+                    password: formData.password,
+                    phone_number: formData.phone_number,
+                    linkedin_profile: formData.linkedin_profile,
+                    state: formData.state,
+                    city: formData.city,
+                    zip_code: formData.zip_code,
+                    document: {
+                        base64_data: base64String,
+                    },
+                };
 
-                if (response.status === 201) {
-                    console.log('Applicant submitted successfully');
-                    // Reset the form
-                    setFormData({
-                        first_name: '',
-                        last_name: '',
-                        username: '',
-                        email: '',
-                        phone_number: '',
-                        linkedin_profile: '',
-                        state: '',
-                        city: '',
-                        zip_code: '',
-                        selected_file: null,
+                console.log('Data to send:', dataToSend);
+
+                // Simulate an API request (replace with your actual API call)
+                try {
+                    const response = axios.post('http://localhost:8000/submit_applicant', dataToSend).then((response) => {
+                        if (response.status === 201) {
+                            console.log('Applicant submitted successfully');
+                            // Reset the form
+                            setFormData({
+                                username: '',
+                                first_name: '',
+                                last_name: '',
+                                email: '',
+                                password: '',
+                                confirmPassword: '', // Reset the password confirmation field
+                                phone_number: '',
+                                linkedin_profile: '',
+                                state: '',
+                                city: '',
+                                zip_code: '',
+                                document: null,
+                            });
+                        } else {
+                            console.error('Error:', response.data);
+                        }
                     });
+                } catch (error) {
+                    console.error('Error:', error);
                 }
             } catch (error) {
                 console.error('Error sending data to API:', error);
-                // You can handle errors and provide feedback to the user
             }
         }
     };
@@ -64,15 +114,14 @@ const Application = () => {
     const validateForm = () => {
         // Define validation rules for each field
         const rules = {
-            first_name: /^[a-zA-Z\s]*$/, // Alphabetic characters and spaces only
+            first_name: /^[a-zA-Z\s]*$/,
             last_name: /^[a-zA-Z\s]*$/,
-            username: /^\w+$/, // Alphanumeric characters and underscores only
-            email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Basic email validation
-            phone_number: /^\d{8}$/, // 8-digit phone number
-            linkedin_profile: /^https?:\/\/(www\.)?linkedin\.com\/.*/, // Basic URL validation
+            email: /^[^\s@]+@[^\s@]+\.[^\s@]+/,
+            phone_number: /^\d{8}/,
+            linkedin_profile: /^https?:\/\/(www\.)?linkedin\.com\/.*/,
             city: /^[a-zA-Z\s]*$/,
             state: /^[a-zA-Z\s]*$/,
-            zip_code: /^\d{4}$/, // 4-digit ZIP code
+            zip_code: /^\d{4}/,
         };
 
         // Create an object to hold validation errors
@@ -85,6 +134,11 @@ const Application = () => {
             }
         }
 
+        // Check if passwords match
+        if (formData.password !== formData.confirmPassword) {
+            errors['confirmPassword'] = 'Passwords do not match';
+        }
+
         // Update the state with the validation errors
         setValidationErrors(errors);
 
@@ -94,170 +148,226 @@ const Application = () => {
 
     return (
         <React.Fragment>
-            <Row>
-                <Col sm={12}>
-                    <Card>
-                        <Card.Header>
-                            <Card.Title as="h5">Validation</Card.Title>
-                        </Card.Header>
-                        <Card.Body>
-                            <Form onSubmit={handleSubmit} encType="multipart/form-data">
-                                <Form.Row>
-                                    <Form.Group as={Col} md="4" controlId="validationCustom01">
-                                        <Form.Label>First name</Form.Label>
+        <Row>
+            <Col sm={12}>
+                <Card>
+                    <Card.Header>
+                        <Card.Title as="h5">User Data</Card.Title>
+                    </Card.Header>
+                    <Card.Body>
+                        <Form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridUsername">
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="username"
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        placeholder="Username"
+                                        isInvalid={validationErrors.username}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.username}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridEmail">
+                                    <Form.Label>Email</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                        </InputGroup.Prepend>
                                         <Form.Control
-                                            required
-                                            type="text"
-                                            name="first_name"
-                                            value={formData.first_name}
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
                                             onChange={handleChange}
-                                            isInvalid={validationErrors.first_name}
+                                            placeholder="Enter email"
+                                            isInvalid={validationErrors.email}
+                                            required
                                         />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.first_name}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustom02">
-                                        <Form.Label>Last name</Form.Label>
-                                        <Form.Control
-                                            required
-                                            type="text"
-                                            name="last_name"
-                                            value={formData.last_name}
-                                            onChange={handleChange}
-                                            isInvalid={validationErrors.last_name}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.last_name}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-                                        <Form.Label>Username</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="username"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            placeholder="Username"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            isInvalid={validationErrors.username}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.username}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="formGridEmail">
-                                        <Form.Label>Email</Form.Label>
-                                        <InputGroup>
-                                            <InputGroup.Prepend>
-                                                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                            </InputGroup.Prepend>
-                                            <Form.Control
-                                                type="email"
-                                                name="email"
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                                placeholder="Enter email"
-                                                isInvalid={validationErrors.email}
-                                                required
-                                            />
-                                        </InputGroup>
-                                        <Form.Control.Feedback type="invalid">{validationErrors.email}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustom02">
-                                        <Form.Label>Phone number</Form.Label>
-                                        <Form.Control
-                                            required
-                                            type="number"
-                                            name="phone_number"
-                                            value={formData.phone_number}
-                                            onChange={handleChange}
-                                            placeholder="Phone number"
-                                            isInvalid={validationErrors.phone_number}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.phone_number}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="4" controlId="validationCustom02">
-                                        <Form.Label>LinkedIn profile</Form.Label>
-                                        <Form.Control
-                                            required
-                                            type="text"
-                                            name="linkedin_profile"
-                                            value={formData.linkedin_profile}
-                                            onChange={handleChange}
-                                            placeholder="LinkedIn profile"
-                                            isInvalid={validationErrors.linkedin_profile}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.linkedin_profile}</Form.Control.Feedback>
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="formGridState">
-                                        <Form.Label>State</Form.Label>
-                                        <Form.Control
-                                            required
-                                            type="text"
-                                            name="state"
-                                            value={formData.state}
-                                            onChange={handleChange}
-                                            placeholder="State"
-                                            isInvalid={validationErrors.state}
-                                        >
-                                        </Form.Control>
-                                        <Form.Control.Feedback type="invalid">{validationErrors.state}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>City</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="city"
-                                            value={formData.city}
-                                            onChange={handleChange}
-                                            placeholder="City"
-                                            required
-                                            isInvalid={validationErrors.city}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.city}</Form.Control.Feedback>
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={Col} md="3" controlId="validationCustom05">
-                                        <Form.Label>Zip</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="zip_code"
-                                            value={formData.zip_code}
-                                            onChange={handleChange}
-                                            placeholder="Zip"
-                                            required
-                                            isInvalid={validationErrors.zip_code}
-                                        />
-                                        <Form.Control.Feedback type="invalid">{validationErrors.zip_code}</Form.Control.Feedback>
-                                    </Form.Group>
-                                    
-                                    <Form.Group as={Col} md="6" controlId="validationCustomFile">
-                                        <Form.Label>Choose a File</Form.Label>
-                                        <InputGroup>
-                                            <div className="custom-file">
-                                                <Form.Control
-                                                    aria-describedby="custom-addons7"
-                                                    type="file"
-                                                    className="custom-file-input"
-                                                    id="validatedCustomFile3"
-                                                    name="selected_file"
-                                                    onChange={handleChange}
-                                                />
-                                                <Form.Label className="custom-file-label" htmlFor="validatedCustomFile3">
-                                                    {formData.selected_file ? formData.selected_file.name : 'Choose file'}
-                                                </Form.Label>
-                                            </div>
-                                        </InputGroup>
-                                    </Form.Group>
-                                
-                                </Form.Row>
-                                <Button type="submit">Submit form</Button>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </React.Fragment>
-    );
-};
+                                    </InputGroup>
+                                    <Form.Control.Feedback type="invalid">{validationErrors.email}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-export default Application;
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridFirstName">
+                                    <Form.Label>First Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="first_name"
+                                        value={formData.first_name}
+                                        onChange={handleChange}
+                                        placeholder="First Name"
+                                        isInvalid={validationErrors.first_name}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.first_name}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridLastName">
+                                    <Form.Label>Last Name</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="last_name"
+                                        value={formData.last_name}
+                                        onChange={handleChange}
+                                        placeholder="Last Name"
+                                        isInvalid={validationErrors.last_name}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.last_name}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridPassword">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                        isInvalid={validationErrors.password}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.password}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group controlId="formGridConfirmPassword">
+                                    <Form.Label>Confirm Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        name="confirmPassword"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        required
+                                        isInvalid={validationErrors.confirmPassword}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.confirmPassword}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={6}>
+                        <Form.Group controlId="formGridPhoneNumber">
+                            <Form.Label>Phone Number</Form.Label>
+                            <Form.Control
+                                required
+                                type="number"
+                                name="phone_number"
+                                value={formData.phone_number}
+                                onChange={handleChange}
+                                placeholder="Phone Number"
+                                isInvalid={validationErrors.phone_number}
+                            />
+                            <Form.Control.Feedback type="invalid">{validationErrors.phone_number}</Form.Control.Feedback>
+                        </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                        <Form.Group controlId="formGridLinkedInProfile">
+                            <Form.Label>LinkedIn Profile</Form.Label>
+                            <Form.Control
+                                required
+                                type="text"
+                                name="linkedin_profile"
+                                value={formData.linkedin_profile}
+                                onChange={handleChange}
+                                placeholder="LinkedIn Profile"
+                                isInvalid={validationErrors.linkedin_profile}
+                            />
+                            <Form.Control.Feedback type="invalid">{validationErrors.linkedin_profile}</Form.Control.Feedback>
+                        </Form.Group>
+                        </Col>
+                        </Row>
+                        <Row>
+                            <Col md={4}>
+                                <Form.Group controlId="formGridState">
+                                    <Form.Label>State</Form.Label>
+                                    <Form.Control
+                                        required
+                                        type="text"
+                                        name="state"
+                                        value={formData.state}
+                                        onChange={handleChange}
+                                        placeholder="State"
+                                        isInvalid={validationErrors.state}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.state}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                            <Col md={4}>
+                                <Form.Group controlId="formGridCity">
+                                    <Form.Label>City</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={handleChange}
+                                        placeholder="City"
+                                        required
+                                        isInvalid={validationErrors.city}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.city}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                            <Col md={4}>
+                                <Form.Group controlId="formGridZipCode">
+                                    <Form.Label>Zip Code</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="zip_code"
+                                        value={formData.zip_code}
+                                        onChange={handleChange}
+                                        placeholder="Zip Code"
+                                        required
+                                        isInvalid={validationErrors.zip_code}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{validationErrors.zip_code}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Form.Group controlId="formGridDocument">
+                        <Form.Label>Choose a Document</Form.Label>
+                        <InputGroup>
+                            <div className="custom-file">
+                                <Form.Control
+                                    aria-describedby="custom-addons7"
+                                    type="file"
+                                    className="custom-file-input"
+                                    id="validatedCustomFile3"
+                                    name="document"
+                                    onChange={(e) => {
+                                        handleFileChange(e);
+                                    }}
+                                />
+                                <Form.Label className="custom-file-label" htmlFor="validatedCustomFile3">
+                                    {formData.document ? formData.document.name : 'Choose file'}
+                                </Form.Label>
+                            </div>
+                        </InputGroup>
+                    </Form.Group>
+
+                    <div className="text-center"> 
+                        <Button type="submit">Submit</Button>
+                    </div>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            </Col>
+        </Row>
+    </React.Fragment>
+);
+    };
+
+export default UserData;
