@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
-
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -19,17 +18,30 @@ const RestRegister = ({ className, ...rest }) => {
                     username: '',
                     email: '',
                     password: '',
+                    retypePassword: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    email: Yup.string()
+                        .email('Must be a valid email')
+                        .max(255)
+                        .required('Email is required'),
                     username: Yup.string().required('Username is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    password: Yup.string()
+                        .matches(
+                            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                            'Password must include at least one uppercase letter, one lowercase letter, and one digit'
+                        )
+                        .max(255)
+                        .required('Password is required'),
+                    retypePassword: Yup.string()
+                        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+                        .required('Retype Password is required'),
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post('http://localhost:8000/api/signin/', {
+                            .post('http://localhost:8000/api/register/', {
                                 username: values.username,
                                 password: values.password,
                                 email: values.email
@@ -101,6 +113,22 @@ const RestRegister = ({ className, ...rest }) => {
                                 value={values.password}
                             />
                             {touched.password && errors.password && <small className="text-danger form-text">{errors.password}</small>}
+                        </div>
+                        <div className="form-group mb-4">
+                            <input
+                                className="form-control"
+                                error={touched.retypePassword && errors.retypePassword}
+                                label="Retype Password"
+                                placeholder="Retype Password"
+                                name="retypePassword"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="password"
+                                value={values.retypePassword}
+                            />
+                            {touched.retypePassword && errors.retypePassword && (
+                                <small className="text-danger form-text">{errors.retypePassword}</small>
+                            )}
                         </div>
 
                         {errors.submit && (

@@ -6,12 +6,12 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
 import useScriptRef from '../../../hooks/useScriptRef';
-import { API_SERVER } from './../../../config/constant';
 import { ACCOUNT_INITIALIZE } from './../../../store/actions';
 
 const RestLogin = ({ className, ...rest }) => {
     const dispatcher = useDispatch();
     const scriptedRef = useScriptRef();
+    const [errorMessage, setErrorMessage] = React.useState(null);
 
     return (
         <React.Fragment>
@@ -28,7 +28,7 @@ const RestLogin = ({ className, ...rest }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post('http://localhost:8000/api/login/', {
+                            .post('http://localhost:8000/api/login', {
                                 password: values.password,
                                 email: values.email
                             })
@@ -44,22 +44,23 @@ const RestLogin = ({ className, ...rest }) => {
                                         setSubmitting(false);
                                     }
                                 } else {
+                                    console.log(response.data.msg);
                                     setStatus({ success: false });
-                                    setErrors({ submit: response.data.msg });
+                                    setErrorMessage(response.data.msg); // Set the error message
                                     setSubmitting(false);
                                 }
                             })
                             .catch(function (error) {
                                 console.log(error);
                                 setStatus({ success: false });
-                                setErrors({ submit: error.response.data.msg });
+                                setErrorMessage(error.response.data.msg); // Set the error message
                                 setSubmitting(false);
                             });
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
-                            setErrors({ submit: err.message });
+                            setErrorMessage(err.message); // Set the error message
                             setSubmitting(false);
                         }
                     }
@@ -96,13 +97,13 @@ const RestLogin = ({ className, ...rest }) => {
                             {touched.password && errors.password && <small className="text-danger form-text">{errors.password}</small>}
                         </div>
 
-                        {errors.submit && (
+                        {errorMessage && (
                             <Col sm={12}>
-                                <Alert variant="danger">{errors.submit}</Alert>
+                                <Alert variant="danger">{errorMessage}</Alert>
                             </Col>
                         )}
 
-                        <div className="custom-control custom-checkbox  text-left mb-4 mt-2">
+                        <div className="custom-control custom-checkbox text-left mb-4 mt-2">
                             <input type="checkbox" className="custom-control-input" id="customCheck1" />
                             <label className="custom-control-label" htmlFor="customCheck1">
                                 Save credentials.
