@@ -2,20 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { Document, Page } from 'react-pdf'; // Import PDF viewer components
-import PdfPreview from './pdf-viewer';
+
+
 
 
 
   
 
-const Application = () => {
-    const history = useHistory();    
-    const [pdfData, setPdfData] = useState('');
-const [numPages, setNumPages] = useState(null);
-const [pageNumber, setPageNumber] = useState(1);
-const [fileName, setfileName] = useState('');
- 
+const Register = () => {
+    const history = useHistory();     
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -28,31 +23,27 @@ const [fileName, setfileName] = useState('');
         document: null,
     });
     const userId= localStorage.getItem('current'); 
-    const onDocumentLoadSuccess = ({ numPages }) => {
-        setNumPages(numPages);
-        setPageNumber(1);
-      };
     useEffect(() => {
         if(localStorage.getItem('current') === null){
             history.push('/auth/signin');
         }
         // Fetch user data based on the provided user ID
-        axios.get(`http://localhost:8000/api/applicant/18/`)
+        axios.get(`http://localhost:8000/api/user/${userId}/`)
             .then((response) => {
-   
-                axios.get(`http://localhost:8000/api/document/${response.data.document}/`).then((response) => {
-                    const data = response.data;
-                    //downlods folder path
-                    console.log(data)
-                     
-                    const file_name =data.name;
-                    const url="/"+file_name
-                    console.log(url)
-                    setPdfData(url);
-                    
-  
+                const userData = response.data;
+                console.log(userData);
+                // Populate the form with the retrieved user data
+                setFormData({
+                    first_name: userData.first_name,
+                    last_name: userData.last_name,
+                    email: userData.email,
+                    phone_number: userData.phone_number,
+                    linkedin_profile: userData.linkedin_profile,
+                    state: userData.state,
+                    city: userData.city,
+                    zip_code: userData.zip_code,
+                    document: null, // You might handle documents differently
                 });
- 
             })
             .catch((error) => {
                 console.error('Error fetching user data:', error);
@@ -63,18 +54,14 @@ const [fileName, setfileName] = useState('');
     const [base64String, setBase64String] = useState('');
 
     const handleFileChange = (event) => {
-        console.log(event.target.files[0].name);
-        setfileName(event.target.files[0].name);
         const file = event.target.files[0];
 
         if (file) {
-            console.log(file.url);
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
             reader.onload = () => {
                 const dataUrl = reader.result;
-                console.log(dataUrl);
                 const base64Data = dataUrl.split(',')[1];
                 setBase64String(base64Data);
             };
@@ -97,17 +84,17 @@ const [fileName, setfileName] = useState('');
             try {
                 // Prepare the data for submission
                 const dataToSend = {
-                    id:localStorage.getItem('current'),
+                    id: userId,
                     first_name: formData.first_name,
                     last_name: formData.last_name,
-                 
+                    email: formData.email,
                     phone_number: formData.phone_number,
                     linkedin_profile: formData.linkedin_profile,
                     state: formData.state,
                     city: formData.city,
                     zip_code: formData.zip_code,
+                    password:"123456789",
                     document: {
-                        name: fileName,
                         base64_data: base64String,
                     },
                 };
@@ -118,8 +105,6 @@ const [fileName, setfileName] = useState('');
                 try {
                     const response = axios.post('http://localhost:8000/submit_applicant/'+userId, dataToSend).then((response) => {
                         if (response.status === 201) {
-                            console.log(response.data)
-                            debugger
                             console.log('Applicant submitted successfully');
                             // Reset the form
                             setFormData({
@@ -132,8 +117,8 @@ const [fileName, setfileName] = useState('');
                                 city: '',
                                 zip_code: '',
                                 document: null,
+                                user:{}
                             });
-                           // history.push('/public/job/list');  
                         } else {
                             console.error('Error:', response.data);
                         }
@@ -183,7 +168,6 @@ const [fileName, setfileName] = useState('');
     };
 
     return (
-        <div>
         <React.Fragment>
     <Row>
         <Col sm={12}>
@@ -355,10 +339,9 @@ const [fileName, setfileName] = useState('');
         </Col>
     </Row>
 </React.Fragment>
- <PdfPreview  pdfUrl={pdfData} />
-</div>
+
     
 );
     };
 
-export default Application;
+export default Register;

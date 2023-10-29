@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import NavBar from '../../layouts/AdminLayout/NavBar/index';
+
 
 const UserData = () => {
+    const history = useHistory(); 
     const [formData, setFormData] = useState({
         username: '',
         first_name: '',
@@ -17,10 +21,41 @@ const UserData = () => {
         zip_code: '',
         document: null,
     });
+    const userId= localStorage.getItem('current'); 
+    
+    console.log(userId);
 
+
+
+
+    useEffect(() => {
+        if(localStorage.getItem('current') === null){
+            history.push('/auth/signin');
+        }
+        // Fetch user data based on the provided user ID
+        axios.get(`http://localhost:8000/api/user/${userId}/`)
+            .then((response) => {
+                const userData = response.data;
+                // Populate the form with the retrieved user data
+                setFormData({
+                    username: userData.username, // You need to populate this field
+                    first_name: userData.first_name,
+                    last_name: userData.last_name,
+                    email: userData.email,
+                    phone_number: userData.phone_number,
+                    linkedin_profile: userData.linkedin_profile,
+                    state: userData.state,
+                    city: userData.city,
+                    zip_code: userData.zip_code,
+                    document: null, // You might handle documents differently
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching user data:', error);
+            });
+    }, [userId]);
     const [validationErrors, setValidationErrors] = useState({}); // State to hold validation errors
     const [base64String, setBase64String] = useState('');
-
     const handleFileChange = (event) => {
         const file = event.target.files[0];
 
@@ -147,6 +182,9 @@ const UserData = () => {
     };
 
     return (
+        <div>
+        <NavBar/> 
+
         <React.Fragment>
         <Row>
             <Col sm={12}>
@@ -367,6 +405,7 @@ const UserData = () => {
             </Col>
         </Row>
     </React.Fragment>
+    </div> 
 );
     };
 

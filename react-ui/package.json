@@ -23,6 +23,7 @@
         "history": "^5.0.0",
         "install": "^0.13.0",
         "jquery": "^3.6.0",
+        "jwt-decode": "^4.0.0",
         "npm": "^7.6.3",
         "pdfjs-dist": "^2.15.349",
         "react": "^17.0.1",

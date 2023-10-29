@@ -5,7 +5,8 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
 import useScriptRef from '../../../hooks/useScriptRef';
-import { API_SERVER } from './../../../config/constant';
+import qs from 'qs';
+
 
 const RestRegister = ({ className, ...rest }) => {
     let history = useHistory();
@@ -41,14 +42,23 @@ const RestRegister = ({ className, ...rest }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post('http://localhost:8000/api/register/', {
+                            .post('http://localhost:8000/api/register/', 
+                            qs.stringify({
                                 username: values.username,
-                                password: values.password,
-                                email: values.email
-                            })
+                                email: values.email,
+                                password: values.password
+                                
+                            }),{
+                                headers: {  'Content-Type': 'application/x-www-form-urlencoded',
+                                  'Accept': '*/*'
+                                  }
+                              })
                             .then(function (response) {
-                                if (response.data.success) {
-                                    history.push('/auth/signin');
+                                console.log(response);
+                                if (response.status===201) {
+                                    localStorage.setItem('current', response.data.id);
+                                    localStorage.setItem('isLoggedIn', true);
+                                    history.push('/public/job/apply');
                                 } else {
                                     setStatus({ success: false });
                                     setErrors({ submit: response.data.msg });

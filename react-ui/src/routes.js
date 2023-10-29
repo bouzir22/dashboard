@@ -35,6 +35,8 @@ export const renderRoutes = (routes = []) => (
 );
 // todo:lazy
 const routes = [
+    
+
     {
         exact: true,
         path: '/public/application/preview/:id',
@@ -43,7 +45,7 @@ const routes = [
     {
         exact: true,
         path: '/public/user/data',
-        component: lazy(() => import('./views/extra/user-data'))
+        component: lazy(() => import('./views/extra/update-user-data'))
     },
     {
         exact: true,
@@ -57,37 +59,50 @@ const routes = [
     },
     {
         exact: true,
-        guard: GuestGuard,
+       
         path: '/auth/signin',
         component: lazy(() => import('./views/auth/signin/SignIn1'))
     },
     {
         exact: true,
-        guard: GuestGuard,
         path: '/auth/signup',
         component: lazy(() => import('./views/auth/signup/SignUp1'))
     },
     {
         exact: true,
-        path: '/auth/signin-2',
-        component: lazy(() => import('./views/auth/signin/SignIn2'))
-    },
-    {
-        exact: true,
-        path: '/auth/signup-2',
-        component: lazy(() => import('./views/auth/signup/SignUp2'))
-    },
+        path: '/public/job/list',
+        component: lazy(() => import('./views/extra/job-list'))
+        },
+        {
+            exact: true,
+            path: '/public/register',
+            component: lazy(() => import('./views/extra/register'))
+            },
+        
+    
+ 
     {
         path: '*',
         layout: AdminLayout,
-       // guard: AuthGuard,
+        guard: AuthGuard,
         routes: [
             {
                 exact: true,
+                 
                 path: '/app/dashboard/default',
                 component: lazy(() => import('./views/dashboard/DashDefault'))
             },
-
+            {
+                exact: true,
+                path: '/app/applicants',
+                component: lazy(() => import('./views/extra/applicants'))
+            },
+            {
+                exact: true,
+                path: '/app/sortedapplicants/:accepted',
+                component: lazy(() => import('./views/extra/sortedapplicants'))
+            },
+            
             {
                 exact: true,
                 path: '/basic/button',
@@ -144,7 +159,7 @@ const routes = [
             {
                 exact: true,
                 path: '/sample-page',
-                component: lazy(() => import('./views/extra/SamplePage'))
+                component: lazy(() => import('./views/extra/sortedapplicants'))
             },
             {
                 exact: true,
@@ -160,11 +175,7 @@ const routes = [
                 path: '/opportunity/preview/:id', // Include a dynamic parameter ':id'
                 component: lazy(() => import('./views/extra/opportunity-preview')),
               },
-            {
-            exact: true,
-            path: '/job/list',
-            component: lazy(() => import('./views/extra/job-list'))
-            },    
+               
           {
             exact: true,
             path: '/opportunity/preview',

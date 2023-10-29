@@ -4,7 +4,7 @@ import { ListGroup, Dropdown, Media } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import axios from 'axios';
-
+import { useHistory } from 'react-router-dom';
 import ChatList from './ChatList';
 import { API_SERVER } from '../../../../config/constant';
 import { LOGOUT } from './../../../../store/actions';
@@ -19,21 +19,14 @@ const NavRight = () => {
     const dispatcher = useDispatch();
 
     const [listOpen, setListOpen] = useState(false);
-
+    let history = useHistory();
     const handleLogout = () => {
-        axios
-            .post(API_SERVER + 'users/logout', {}, { headers: { Authorization: `${account.token}` } })
-            .then(function (response) {
-                // Force the LOGOUT
-                //if (response.data.success) {
-                dispatcher({ type: LOGOUT });
-                //} else {
-                //    console.log('response - ', response.data.msg);
-                //}
-            })
-            .catch(function (error) {
-                console.log('error - ', error);
-            });
+        localStorage.removeItem('current');
+        localStorage.removeItem('type');
+        localStorage.setItem('isLoggedIn', false);
+        history.push('/auth/signin');
+       
+
     };
 
     return (
@@ -174,7 +167,7 @@ const NavRight = () => {
                                     </Link>
                                 </ListGroup.Item>
                                 <ListGroup.Item as="li" bsPrefix=" ">
-                                    <Link to="/auth/signin-2" className="dropdown-item" onClick={handleLogout}>
+                                    <Link to="/auth/signin" className="dropdown-item" onClick={handleLogout}>
                                         <i className="feather icon-log-out" /> Logout
                                     </Link>
                                 </ListGroup.Item>

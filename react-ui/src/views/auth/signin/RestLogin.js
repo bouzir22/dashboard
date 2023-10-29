@@ -1,7 +1,7 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector} from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Row, Col, Button, Alert } from 'react-bootstrap';
-
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -11,8 +11,14 @@ import { ACCOUNT_INITIALIZE } from './../../../store/actions';
 const RestLogin = ({ className, ...rest }) => {
     const dispatcher = useDispatch();
     const scriptedRef = useScriptRef();
-    const [errorMessage, setErrorMessage] = React.useState(null);
-
+    const [errorMessage, setErrorMessage] = useState(null);
+    const account = useSelector((state) => state.account);
+    let history = useHistory();
+    
+    if (account.isLoggedIn) {
+        
+       // history.push('/public/job/list');
+    }
     return (
         <React.Fragment>
             <Formik
@@ -31,31 +37,25 @@ const RestLogin = ({ className, ...rest }) => {
                             .post('http://localhost:8000/api/login', {
                                 password: values.password,
                                 email: values.email
-                            })
-                            .then(function (response) {
-                                if (response.data.success) {
-                                    console.log(response.data);
-                                    dispatcher({
-                                        type: ACCOUNT_INITIALIZE,
-                                        payload: { isLoggedIn: true, user: response.data.user, token: response.data.token }
-                                    });
-                                    if (scriptedRef.current) {
-                                        setStatus({ success: true });
-                                        setSubmitting(false);
-                                    }
-                                } else {
-                                    console.log(response.data.msg);
-                                    setStatus({ success: false });
-                                    setErrorMessage(response.data.msg); // Set the error message
-                                    setSubmitting(false);
-                                }
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                                setStatus({ success: false });
-                                setErrorMessage(error.response.data.msg); // Set the error message
-                                setSubmitting(false);
-                            });
+                            }) .then(response=>{
+                                if (response.status === 200) { 
+                                    console.log(response.data); 
+
+                                localStorage.setItem('current', response.data.id);
+                                localStorage.setItem('isLoggedIn', true);
+                                if(response.data.is_superusr===true){
+                                    localStorage.setItem('type', "hr");
+                                    console.log("hr");
+                                   history.push('/app/dashboard/default');
+                                  
+                                    
+                                }else   history.push('/public/job/list');
+                            
+                            }
+                            }
+                            )
+                             
+                          
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {

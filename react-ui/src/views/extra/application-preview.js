@@ -10,7 +10,7 @@ const ApplicationPreview = () => {
   const [pdfData, setPdfData] = useState('');
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-
+ 
   useEffect(() => {
     // Fetch applicant and PDF data based on the applicationId
     axios.get(`http://localhost:8000/api/application/${applicationId}/`)
@@ -82,6 +82,7 @@ const ApplicationPreview = () => {
 
         {pdfData && (
           <div>
+            <p>ss</p>
             {/* PDF viewer using react-pdf */}
             <Document file={`data:application/pdf;base64,${pdfData}`} onLoadSuccess={onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} />

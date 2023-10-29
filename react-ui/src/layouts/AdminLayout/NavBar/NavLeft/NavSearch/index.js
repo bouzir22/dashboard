@@ -2,26 +2,24 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const NavSearch = (props) => {
-    const { windowWidth } = props;
-    const [isOpen, setIsOpen] = useState(windowWidth < 600);
-    const [searchString, setSearchString] = useState(windowWidth < 600 ? '100px' : '');
+    const { onSearch } = props; // Pass an onSearch callback function
+    const [isOpen, setIsOpen] = useState(false); // Initialize as closed
+    const [searchString, setSearchString] = useState('');
 
     const searchOnHandler = () => {
-        if (windowWidth < 600) {
-            document.querySelector('#navbar-right').classList.add('d-none');
-        }
         setIsOpen(true);
-        setSearchString('100px');
+        setSearchString('');
     };
 
     const searchOffHandler = () => {
         setIsOpen(false);
-        setSearchString(0);
-        setTimeout(() => {
-            if (windowWidth < 600) {
-                document.querySelector('#navbar-right').classList.remove('d-none');
-            }
-        }, 500);
+        setSearchString('');
+    };
+
+    const handleSearch = (event) => {
+        const query = event.target.value; // Get the search query from the input field
+        setSearchString(query); // Update the search string in the component's state
+        onSearch(query); // Execute the search by calling the onSearch callback
     };
 
     let searchClass = ['main-search'];
@@ -33,7 +31,15 @@ const NavSearch = (props) => {
         <React.Fragment>
             <div id="main-search" className={searchClass.join(' ')}>
                 <div className="input-group">
-                    <input type="text" id="m-search" className="form-control" placeholder="Search . . ." style={{ width: searchString }} />
+                    <input
+                        type="text"
+                        id="m-search"
+                        className="form-control"
+                        placeholder="Search . . ."
+                        style={{ width: searchString }}
+                        value={searchString}
+                        onChange={handleSearch} // Call the handleSearch function when the input field changes
+                    />
                     <Link to="#" className="input-group-append search-close" onClick={searchOffHandler}>
                         <i className="feather icon-x input-group-text" />
                     </Link>
