@@ -64,11 +64,8 @@ const Jobs = () => {
             ))}
           </tbody>
         </Table>
-        <Link to="/opportunity/add">
-          <Button className="btn-rounded text-capitalize" variant="success">
-            Add New Job
-          </Button>
-        </Link>
+        
+          
       </Card.Body>
     </Card>
   );

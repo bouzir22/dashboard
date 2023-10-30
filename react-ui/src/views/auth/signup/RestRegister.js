@@ -58,7 +58,7 @@ const RestRegister = ({ className, ...rest }) => {
                                 if (response.status===201) {
                                     localStorage.setItem('current', response.data.id);
                                     localStorage.setItem('isLoggedIn', true);
-                                    history.push('/public/job/apply');
+                                    history.push('/public/register');
                                 } else {
                                     setStatus({ success: false });
                                     setErrors({ submit: response.data.msg });

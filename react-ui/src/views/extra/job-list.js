@@ -34,7 +34,17 @@ const JobList = () => {
     };
 
     const handleApply = (jobId) => {
-        setSelectedJobId(jobId);
+        // Send an API request to apply for the job with userId and jobId
+        axios
+            .post(`http://localhost:8000/apply/${userId}/${jobId}/`)
+            .then((response) => {
+                console.log('Applied for job successfully:', response.data);
+                // Handle the success case as needed
+            })
+            .catch((error) => {
+                console.error('Error applying for job:', error);
+                // Handle the error case as needed
+            });
     };
 
     // Custom search component
@@ -46,7 +56,6 @@ const JobList = () => {
     const filteredOpportunities = opportunities.filter((opportunity) =>
         opportunity.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
 
     return (
         <div>
@@ -100,7 +109,7 @@ const JobList = () => {
                                                 </Card.Text>
                                                 <div className="float-right">
                                                     <Button
-                                                        variant="success"
+                                                        variant="primary" // Changed to "Apply"
                                                         onClick={() => handleApply(jobOpportunity.id)}
                                                     >
                                                         Apply
@@ -129,6 +138,5 @@ const JobList = () => {
         </div>
     );
 };
-
 
 export default JobList;

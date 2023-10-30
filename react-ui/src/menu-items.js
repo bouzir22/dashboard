@@ -39,6 +39,12 @@ const menuItems = {
                             type: 'item',
                             url: '/app/sortedapplicants/1'
                         },
+                        {
+                            id: 'button',
+                            title: 'Rejected Applicants',
+                            type: 'item',
+                            url: '/app/sortedapplicants/2'
+                        },
                         
                     ]
                 }
@@ -61,15 +67,15 @@ const menuItems = {
                             title: 'Oppmortunities List',
                             type: 'item',
                             url: '/Jobs',
-                            target: true,
+                        
                             breadcrumbs: false
                         },
                         {
                             id: 'signin-2',
                             title: 'Add Oppmortunity',
                             type: 'item',
-                            url: '/auth/signin-2',
-                            target: true,
+                            url: '/opportunity/add',
+                            
                             breadcrumbs: false
                         }
                     ]

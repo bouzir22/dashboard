@@ -37,7 +37,7 @@ const [fileName, setfileName] = useState('');
             history.push('/auth/signin');
         }
         // Fetch user data based on the provided user ID
-        axios.get(`http://localhost:8000/api/applicant/18/`)
+        axios.get(`http://localhost:8000/api/applicant/${userId}/`)
             .then((response) => {
    
                 axios.get(`http://localhost:8000/api/document/${response.data.document}/`).then((response) => {

@@ -3,14 +3,13 @@ import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-
-
-
-
-  
-
 const Register = () => {
-    const history = useHistory();     
+    const history = useHistory();
+    const [pdfData, setPdfData] = useState('');
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [fileName, setfileName] = useState('');
+
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -22,18 +21,19 @@ const Register = () => {
         zip_code: '',
         document: null,
     });
-    const userId= localStorage.getItem('current'); 
+    const userId = localStorage.getItem('current');
+
     useEffect(() => {
-        if(localStorage.getItem('current') === null){
+        if (localStorage.getItem('current') === null) {
             history.push('/auth/signin');
         }
         // Fetch user data based on the provided user ID
-        axios.get(`http://localhost:8000/api/user/${userId}/`)
+        axios.get(`http://localhost:8000/api/applicant/${userId}/`)
             .then((response) => {
                 const userData = response.data;
-                console.log(userData);
-                // Populate the form with the retrieved user data
+
                 setFormData({
+                    
                     first_name: userData.first_name,
                     last_name: userData.last_name,
                     email: userData.email,
@@ -42,7 +42,7 @@ const Register = () => {
                     state: userData.state,
                     city: userData.city,
                     zip_code: userData.zip_code,
-                    document: null, // You might handle documents differently
+                    document: null, // Since document data is fetched separately
                 });
             })
             .catch((error) => {
@@ -50,18 +50,22 @@ const Register = () => {
             });
     }, [userId]);
 
-    const [validationErrors, setValidationErrors] = useState({}); // State to hold validation errors
+    const [validationErrors, setValidationErrors] = useState({});
     const [base64String, setBase64String] = useState('');
 
     const handleFileChange = (event) => {
+        console.log(event.target.files[0].name);
+        setfileName(event.target.files[0].name);
         const file = event.target.files[0];
 
         if (file) {
+            console.log(file.url);
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
             reader.onload = () => {
                 const dataUrl = reader.result;
+                console.log(dataUrl);
                 const base64Data = dataUrl.split(',')[1];
                 setBase64String(base64Data);
             };
@@ -84,7 +88,7 @@ const Register = () => {
             try {
                 // Prepare the data for submission
                 const dataToSend = {
-                    id: userId,
+                    user_ptr__id: localStorage.getItem('current'),
                     first_name: formData.first_name,
                     last_name: formData.last_name,
                     email: formData.email,
@@ -93,8 +97,8 @@ const Register = () => {
                     state: formData.state,
                     city: formData.city,
                     zip_code: formData.zip_code,
-                    password:"123456789",
                     document: {
+                        name: fileName,
                         base64_data: base64String,
                     },
                 };
@@ -103,8 +107,9 @@ const Register = () => {
 
                 // Simulate an API request (replace with your actual API call)
                 try {
-                    const response = axios.post('http://localhost:8000/submit_applicant/'+userId, dataToSend).then((response) => {
+                    const response = axios.post('http://localhost:8000/submit_applicant/' + userId, dataToSend).then((response) => {
                         if (response.status === 201) {
+                            console.log(response.data);
                             console.log('Applicant submitted successfully');
                             // Reset the form
                             setFormData({
@@ -117,7 +122,6 @@ const Register = () => {
                                 city: '',
                                 zip_code: '',
                                 document: null,
-                                user:{}
                             });
                         } else {
                             console.error('Error:', response.data);
@@ -127,7 +131,7 @@ const Register = () => {
                     console.error('Error:', error);
                 }
             } catch (error) {
-                console.error('Error sending data to API:', error);
+                console.error('Error sending data to the API:', error);
             }
         }
     };
@@ -155,11 +159,6 @@ const Register = () => {
             }
         }
 
-        // Check if passwords match
-        if (formData.password !== formData.confirmPassword) {
-            errors['confirmPassword'] = 'Passwords do not match';
-        }
-
         // Update the state with the validation errors
         setValidationErrors(errors);
 
@@ -168,180 +167,197 @@ const Register = () => {
     };
 
     return (
-        <React.Fragment>
-    <Row>
-        <Col sm={12}>
-            <Card>
-                <Card.Header>
-                    <Card.Title as="h5">Application</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                    <Form onSubmit={handleSubmit} encType="multipart/form-data">
-                        {/* Personal Information Section */}
-                        <Form.Group controlId="personalInfo">
-                            <Form.Row>
-                                <Form.Group as={Col} md="4" controlId="validationCustom01">
-                                    <Form.Label>First name</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="text"
-                                        name="first_name"
-                                        value={formData.first_name}
-                                        onChange={handleChange}
-                                        isInvalid={validationErrors.first_name}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.first_name}</Form.Control.Feedback>
-                                </Form.Group>
+        <div>
+            <React.Fragment>
+                <Row>
+                    <Col sm={12}>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title as="h5">Applicant Data</Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                <Form onSubmit={handleSubmit} encType="multipart/form-data">
+                                    {/* Personal Information Section */}
+                                    <Form.Group controlId="personalInfo">
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="4" controlId="validationCustom01">
+                                                <Form.Label>First name</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    name="first_name"
+                                                    value={formData.first_name}
+                                                    onChange={handleChange}
+                                                    isInvalid={validationErrors.first_name}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.first_name}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
 
-                                <Form.Group as={Col} md="4" controlId="validationCustom02">
-                                    <Form.Label>Last name</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="text"
-                                        name="last_name"
-                                        value={formData.last_name}
-                                        onChange={handleChange}
-                                        isInvalid={validationErrors.last_name}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.last_name}</Form.Control.Feedback>
-                                </Form.Group>
+                                            <Form.Group as={Col} md="4" controlId="validationCustom02">
+                                                <Form.Label>Last name</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    name="last_name"
+                                                    value={formData.last_name}
+                                                    onChange={handleChange}
+                                                    isInvalid={validationErrors.last_name}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.last_name}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
 
-                                <Form.Group as={Col} controlId="formGridEmail">
-                                    <Form.Label>Email</Form.Label>
-                                    <InputGroup>
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <Form.Control
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            placeholder="Enter email"
-                                            isInvalid={validationErrors.email}
-                                            required
-                                        />
-                                    </InputGroup>
-                                    <Form.Control.Feedback type="invalid">{validationErrors.email}</Form.Control.Feedback>
-                                </Form.Group>
-                            </Form.Row>
-                        </Form.Group>
+                                            <Form.Group as={Col} controlId="formGridEmail">
+                                                <Form.Label>Email</Form.Label>
+                                                <InputGroup>
+                                                    <InputGroup.Prepend>
+                                                        <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                                                    </InputGroup.Prepend>
+                                                    <Form.Control
+                                                        type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleChange}
+                                                        placeholder="Enter email"
+                                                        isInvalid={validationErrors.email}
+                                                        required
+                                                    />
+                                                </InputGroup>
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.email}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </Form.Group>
 
-                        {/* Contact Information Section */}
-                        <Form.Group controlId="contactInfo">
-                            <Form.Row>
-                                <Form.Group as={Col} md="6" controlId="validationCustom02">
-                                    <Form.Label>Phone number</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="number"
-                                        name="phone_number"
-                                        value={formData.phone_number}
-                                        onChange={handleChange}
-                                        placeholder="Phone number"
-                                        isInvalid={validationErrors.phone_number}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.phone_number}</Form.Control.Feedback>
-                                </Form.Group>
+                                    {/* Contact Information Section */}
+                                    <Form.Group controlId="contactInfo">
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="6" controlId="validationCustom02">
+                                                <Form.Label>Phone number</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="number"
+                                                    name="phone_number"
+                                                    value={formData.phone_number}
+                                                    onChange={handleChange}
+                                                    placeholder="Phone number"
+                                                    isInvalid={validationErrors.phone_number}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.phone_number}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
 
-                                <Form.Group as={Col} md="6" controlId="validationCustom02">
-                                    <Form.Label>LinkedIn profile</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="text"
-                                        name="linkedin_profile"
-                                        value={formData.linkedin_profile}
-                                        onChange={handleChange}
-                                        placeholder="LinkedIn profile"
-                                        isInvalid={validationErrors.linkedin_profile}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.linkedin_profile}</Form.Control.Feedback>
-                                </Form.Group>
-                            </Form.Row>
-                        </Form.Group>
+                                            <Form.Group as={Col} md="6" controlId="validationCustom02">
+                                                <Form.Label>LinkedIn profile</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    name="linkedin_profile"
+                                                    value={formData.linkedin_profile}
+                                                    onChange={handleChange}
+                                                    placeholder="LinkedIn profile"
+                                                    isInvalid={validationErrors.linkedin_profile}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.linkedin_profile}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </Form.Group>
 
-                        {/* Address Section */}
-                        <Form.Group controlId="addressInfo">
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="formGridState">
-                                    <Form.Label>State</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="text"
-                                        name="state"
-                                        value={formData.state}
-                                        onChange={handleChange}
-                                        placeholder="State"
-                                        isInvalid={validationErrors.state}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.state}</Form.Control.Feedback>
-                                </Form.Group>
+                                    {/* Address Section */}
+                                    <Form.Group controlId="addressInfo">
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="formGridState">
+                                                <Form.Label>State</Form.Label>
+                                                <Form.Control
+                                                    required
+                                                    type="text"
+                                                    name="state"
+                                                    value={formData.state}
+                                                    onChange={handleChange}
+                                                    placeholder="State"
+                                                    isInvalid={validationErrors.state}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.state}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
 
-                                <Form.Group as={Col} controlId="formGridCity">
-                                    <Form.Label>City</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="city"
-                                        value={formData.city}
-                                        onChange={handleChange}
-                                        placeholder="City"
-                                        required
-                                        isInvalid={validationErrors.city}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.city}</Form.Control.Feedback>
-                                </Form.Group>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>City</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="city"
+                                                    value={formData.city}
+                                                    onChange={handleChange}
+                                                    placeholder="City"
+                                                    required
+                                                    isInvalid={validationErrors.city}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.city}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
 
-                                <Form.Group as={Col} md="3" controlId="validationCustom05">
-                                    <Form.Label>Zip</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="zip_code"
-                                        value={formData.zip_code}
-                                        onChange={handleChange}
-                                        placeholder="Zip"
-                                        required
-                                        isInvalid={validationErrors.zip_code}
-                                    />
-                                    <Form.Control.Feedback type="invalid">{validationErrors.zip_code}</Form.Control.Feedback>
-                                </Form.Group>
-                            </Form.Row>
-                        </Form.Group>
+                                            <Form.Group as={Col} md="3" controlId="validationCustom05">
+                                                <Form.Label>Zip</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="zip_code"
+                                                    value={formData.zip_code}
+                                                    onChange={handleChange}
+                                                    placeholder="Zip"
+                                                    required
+                                                    isInvalid={validationErrors.zip_code}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {validationErrors.zip_code}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </Form.Group>
 
-                        {/* Document Upload Section */}
-                        <Form.Group controlId="documentInfo">
-                            <Form.Row>
-                                <Form.Group as={Col} md="12" controlId="validationCustomFile">
-                                    <Form.Label>Choose a File</Form.Label>
-                                    <InputGroup>
-                                        <div className="custom-file">
-                                            <Form.Control
-                                                aria-describedby="custom-addons7"
-                                                type="file"
-                                                className="custom-file-input"
-                                                id="validatedCustomFile3"
-                                                name="document"
-                                                onChange={handleFileChange}
-                                            />
-                                            <Form.Label className="custom-file-label" htmlFor="validatedCustomFile3">
-                                                {formData.document ? formData.document.name : 'Choose file'}
-                                            </Form.Label>
-                                        </div>
-                                    </InputGroup>
-                                </Form.Group>
-                            </Form.Row>
-                        </Form.Group>
-                        <div className="text-center">
-                        <Button type="submit">Submit form</Button>
-                        </div>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </Col>
-    </Row>
-</React.Fragment>
+                                    {/* Document Upload Section */}
+                                    <Form.Group controlId="documentInfo">
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="12" controlId="validationCustomFile">
+                                                <Form.Label>Choose a File</Form.Label>
+                                                <InputGroup>
+                                                    <div className="custom-file">
+                                                        <Form.Control
+                                                            aria-describedby="custom-addons7"
+                                                            type="file"
+                                                            className="custom-file-input"
+                                                            id="validatedCustomFile3"
+                                                            name="document"
+                                                            onChange={handleFileChange}
+                                                        />
+                                                        <Form.Label className="custom-file-label" htmlFor="validatedCustomFile3">
+                                                            {formData.document ? formData.document.name : 'Choose file'}
+                                                        </Form.Label>
+                                                    </div>
+                                                </InputGroup>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </Form.Group>
 
-    
-);
-    };
+                                    <div className="text-center">
+                                        <Button type="submit">Submit form</Button>
+                                    </div>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </React.Fragment>
+        </div>
+    );
+};
 
 export default Register;

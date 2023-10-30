@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom'; // Import useLocation from react-router-dom
+import { useParams } from 'react-router-dom';
 
 const SortedApplicantList = () => {
   const { accepted } = useParams();
   const [applicants, setApplicants] = useState([]);
-  const location = useLocation(); // Get the current location
 
   useEffect(() => {
-    // Extract the account_state query parameter from the current location
-    
-    
-
-    // Fetch applicant data from your Django API based on the account_state
+    // Fetch sorted applicant data based on the 'accepted' value from the route parameter
     axios
-      .get(`http://localhost:8000/api/sortedapplicants/${accepted}/`)
+      .get(`http://localhost:8000/filtered/applicants/?accepted=${accepted}`)
       .then((response) => {
         setApplicants(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, [accepted]); // Listen for changes in location.search
+  }, [accepted]);
 
   return (
     <Card>
