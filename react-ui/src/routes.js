@@ -37,10 +37,11 @@ export const renderRoutes = (routes = []) => (
 const routes = [
     
 
+    
     {
         exact: true,
-        path: '/public/application/preview/:id',
-        component: lazy(() => import('./views/extra/application-preview'))
+        path: '/public/application/register',
+        component: lazy(() => import('./views/auth/signup/RestRegister copy'))
     },
     {
         exact: true,
@@ -68,11 +69,7 @@ const routes = [
         path: '/auth/signup',
         component: lazy(() => import('./views/auth/signup/SignUp1'))
     },
-    {
-        exact: true,
-        path: '/public/job/list',
-        component: lazy(() => import('./views/extra/job-list'))
-        },
+    
         {
             exact: true,
             path: '/public/register',
@@ -91,6 +88,17 @@ const routes = [
                  
                 path: '/app/dashboard/default',
                 component: lazy(() => import('./views/dashboard/DashDefault'))
+            },
+            {
+                exact: true,
+                path: '/app/application/preview/:id',
+                component: lazy(() => import('./views/extra/application-preview'))
+            },
+            {
+                exact: true,
+                 
+                path: '/users/applications',
+                component: lazy(() => import('./views/dashboard/DashDefault/usersApplications'))
             },
             {
                 exact: true,
@@ -150,11 +158,7 @@ const routes = [
                 path: '/charts/nvd3',
                 component: lazy(() => import('./views/charts/nvd3-chart'))
             },
-            {
-                exact: true,
-                path: '/maps/google-map',
-                component: lazy(() => import('./views/maps/GoogleMaps'))
-            },
+            
 
             {
                 exact: true,
@@ -166,6 +170,11 @@ const routes = [
                 path: '/jobs',
                 component: lazy(() => import('./views/extra/Jobs'))
             },
+            {
+                exact: true,
+                path: '/opportunity/update',
+                component: lazy(() => import('./views/extra/opportunity-update'))
+            },   
             {
                 exact: true,
                 path: '/opportunity/add',

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import { Row, Col, Card, Table } from 'react-bootstrap';
 import axios from 'axios';
-
 import avatar1 from '../../../assets/images/user/avatar-1.jpg';
 
 const UsersApplications = (props) => {
@@ -11,17 +10,16 @@ const UsersApplications = (props) => {
     const [sortBy, setSortBy] = useState(null);
 
     useEffect(() => {
-      // Fetch applications from your API endpoint
-      axios.get('http://localhost:8000/get-recent-applications/')
-          .then((response) => {
-              // Assuming the API response is an array of applications
-              setApplications(response.data);
-              setSortedApplications(response.data);
-          })
-          .catch((error) => {
-              console.error('Error fetching applications:', error);
-          });
-  }, []);
+        // Fetch applications from your API endpoint
+        axios.get('http://localhost:8000/get-recent-applications/')
+            .then((response) => {
+                setApplications(response.data);
+                setSortedApplications(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching applications:', error);
+            });
+    }, []);
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -32,7 +30,6 @@ const UsersApplications = (props) => {
     const handleSort = (sortKey) => {
         const sorted = [...sortedApplications];
         if (sortKey === sortBy) {
-            // Reverse the order if clicking the same column again
             sorted.reverse();
         } else {
             if (sortKey === 'score') {
@@ -46,12 +43,10 @@ const UsersApplications = (props) => {
     };
 
     const handleAction = (applicationId, action) => {
-        // Send a POST request to either the reject-application or accept-application endpoint
         const endpoint = action === 'reject' ? `http://localhost:8000/reject-application/${applicationId}/` : `http://localhost:8000/accept-application/${applicationId}/`;
 
         axios.post(endpoint)
             .then((response) => {
-                // Handle success, remove the application from the UI
                 const updatedApplications = sortedApplications.filter(application => application.id !== applicationId);
                 setSortedApplications(updatedApplications);
             })
@@ -77,7 +72,7 @@ const UsersApplications = (props) => {
                                         <div className='btn'> Date</div>
                                     </Col>
                                 </Row>
-                                <th>actions</th>
+                                <th>Actions</th>
                             </thead>
                         </Table>
                     </Card.Header>
@@ -91,12 +86,9 @@ const UsersApplications = (props) => {
                                                 <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
                                             </td>
                                             <td>
-                                                <Link to={`/public/application/preview/${application.id}`}>{/* Link to preview page */}
-                                                    <h6 className="mb-1">{application.applicant.full_name}</h6>
-                                                </Link>
-
+                                                <h6 className="mb-1">{application.applicantFullName}</h6>
                                                 <p className="m-0">
-                                                    <a href='#'>{application.appRef}</a> application scored {((application.score * 100).toFixed(2))}
+                                                <a href={`/app/application/preview/${application.id}`}>Application ID: {application.id}</a> scored {((application.score * 100).toFixed(2))}
                                                 </p>
                                             </td>
                                             <td>

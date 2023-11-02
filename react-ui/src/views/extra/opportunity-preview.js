@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
-import Opportunity from './Opportunity';
+import OpportunityUpdate from './opportunity-update';
 
 const OpportunityPreview = () => {
   const { id } = useParams();
@@ -68,7 +68,7 @@ const OpportunityPreview = () => {
 
   const ApplicationForm = (
     <Form>
-      <Opportunity opportunityData={jobData} />
+      <OpportunityUpdate opportunityData={jobData} />
     </Form>
   );
 

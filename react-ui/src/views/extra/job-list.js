@@ -36,14 +36,14 @@ const JobList = () => {
     const handleApply = (jobId) => {
         // Send an API request to apply for the job with userId and jobId
         axios
-            .post(`http://localhost:8000/apply/${userId}/${jobId}/`)
+            .get(`http://localhost:8000/application/apply/${userId}/${jobId}/`)
             .then((response) => {
                 console.log('Applied for job successfully:', response.data);
-                // Handle the success case as needed
+                alert('Applied for job successfully');
             })
             .catch((error) => {
                 console.error('Error applying for job:', error);
-                // Handle the error case as needed
+                alert('you have already applied for this job');
             });
     };
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
-import RestRegister from './RestRegister';
+import Registration from './RestRegister copy'; // Import the Registration component
 import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
 
 const SignUp1 = () => {
@@ -26,9 +27,9 @@ const SignUp1 = () => {
                                     <div className="mb-4">
                                         <i className="feather icon-user-plus auth-icon" />
                                     </div>
-
-                                    <RestRegister />
-
+                                    <div>
+                                    <Registration /> {/* Replace the form with the Registration component */}
+                                    </div>
                                     <p className="mb-2">
                                         Already have an account?{' '}
                                         <NavLink to="/auth/signin" className="f-w-400">

@@ -32,6 +32,7 @@ const RestLogin = ({ className, ...rest }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    //add alert login failed
                     try {
                         axios
                             .post('http://localhost:8000/api/login', {
@@ -40,6 +41,7 @@ const RestLogin = ({ className, ...rest }) => {
                             }) .then(response=>{
                                 if (response.status === 200) { 
                                     console.log(response.data); 
+                                    
 
                                 localStorage.setItem('current', response.data.id);
                                 localStorage.setItem('isLoggedIn', true);
@@ -58,10 +60,14 @@ const RestLogin = ({ className, ...rest }) => {
                           
                     } catch (err) {
                         console.error(err);
+                        alert('Login failed');
+                        
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrorMessage(err.message); // Set the error message
+
                             setSubmitting(false);
+                            
                         }
                     }
                 }}

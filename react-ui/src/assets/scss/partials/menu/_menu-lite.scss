@@ -3885,7 +3885,9 @@ body.layout-6 {
     .breadcrumb-item + .breadcrumb-item::before,
     .page-header-title + .breadcrumb > .breadcrumb-item a {
         color: rgba(255, 255, 255, 0.8);
+        
     }
+    
 
     .pcoded-content {
         background: $theme-background;

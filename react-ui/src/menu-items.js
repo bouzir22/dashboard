@@ -52,19 +52,19 @@ const menuItems = {
         },
         {
             id: 'pages',
-            title: 'Oppmortunity management',
+            title: 'Opportunity management',
             type: 'group',
             icon: 'icon-pages',
             children: [
                 {
                     id: 'auth',
-                    title: 'Oppmortunities',
+                    title: 'Opportunities',
                     type: 'collapse',
                     icon: 'feather icon-lock',
                     children: [
                         {
                             id: 'signup-2',
-                            title: 'Oppmortunities List',
+                            title: 'Opportunities List',
                             type: 'item',
                             url: '/Jobs',
                         
@@ -85,24 +85,18 @@ const menuItems = {
         },
         {
             id: 'chart-maps',
-            title: 'Oppoertunities',
+            title: 'Applications',
             type: 'group',
             icon: 'icon-charts',
             children: [
                 {
                     id: 'charts',
-                    title: 'Charts',
+                    title: 'Recent Applications',
                     type: 'item',
-                    url: '/charts/nvd3',
+                    url: '/users/applications',
                     icon: 'feather icon-pie-chart'
                 },
-                {
-                    id: 'maps',
-                    title: 'Maps',
-                    type: 'item',
-                    url: '/maps/google-map',
-                    icon: 'feather icon-map'
-                }
+                
             ]
         
         },

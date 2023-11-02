@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Document, Page } from  'react-pdf/dist/esm/entry.webpack';
 
-const PdfPreview = ({ pdfUrl }) => {
+const PdfPreview = ({ decodedPdfData }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
@@ -13,7 +13,7 @@ const PdfPreview = ({ pdfUrl }) => {
   return (
     <div>
       <div className="pdf-viewer">
-        <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+        <Document file={decodedPdfData} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} />
         </Document>
       </div>

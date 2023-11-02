@@ -3,7 +3,7 @@ import { Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const Register = () => {
+const Registeration = () => {
     const history = useHistory();
     const [pdfData, setPdfData] = useState('');
     const [numPages, setNumPages] = useState(null);
@@ -88,10 +88,10 @@ const Register = () => {
             try {
                 // Prepare the data for submission
                 const dataToSend = {
-                    user_ptr__id: localStorage.getItem('current'),
+                    //user_ptr__id: localStorage.getItem('current'),
                     first_name: formData.first_name,
                     last_name: formData.last_name,
-                    email: formData.email,
+                    //email: formData.email,
                     phone_number: formData.phone_number,
                     linkedin_profile: formData.linkedin_profile,
                     state: formData.state,
@@ -107,7 +107,7 @@ const Register = () => {
 
                 // Simulate an API request (replace with your actual API call)
                 try {
-                    const response = axios.post('http://localhost:8000/submit_applicant/' + userId, dataToSend).then((response) => {
+                    const response = axios.post('http://localhost:8000/api/applicants/' , dataToSend).then((response) => {
                         if (response.status === 201) {
                             console.log(response.data);
                             console.log('Applicant submitted successfully');
@@ -210,26 +210,7 @@ const Register = () => {
                                                 </Form.Control.Feedback>
                                             </Form.Group>
 
-                                            <Form.Group as={Col} controlId="formGridEmail">
-                                                <Form.Label>Email</Form.Label>
-                                                <InputGroup>
-                                                    <InputGroup.Prepend>
-                                                        <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                                                    </InputGroup.Prepend>
-                                                    <Form.Control
-                                                        type="email"
-                                                        name="email"
-                                                        value={formData.email}
-                                                        onChange={handleChange}
-                                                        placeholder="Enter email"
-                                                        isInvalid={validationErrors.email}
-                                                        required
-                                                    />
-                                                </InputGroup>
-                                                <Form.Control.Feedback type="invalid">
-                                                    {validationErrors.email}
-                                                </Form.Control.Feedback>
-                                            </Form.Group>
+                                             
                                         </Form.Row>
                                     </Form.Group>
 
@@ -360,4 +341,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Registeration;

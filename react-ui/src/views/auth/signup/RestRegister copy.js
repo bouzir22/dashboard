@@ -4,17 +4,15 @@ import { Row, Col, Button, Form, Card } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import axios from 'axios';
-import NavBar from '../../layouts/AdminLayout/NavBar/index';
+import useScriptRef from '../../../hooks/useScriptRef';
 import qs from 'qs';
 import { withRouter } from 'react-router';
 
 
-class UserData extends Component {
-
+class Registration extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        
         // Existing fields
         username: '',
         email: '',
@@ -34,29 +32,7 @@ class UserData extends Component {
         isUploading: false, // New state to track CV upload status
       };
     }
-    componentDidMount() {
-        // Fetch user data from the database or API and update the component state
-        axios.get(`http://localhost:8000/api/applicants/${localStorage.getItem('current')}/`)
-          .then(response => {
-            const userData = response.data;
-            this.setState({
-              username: userData.username,
-              email: userData.email,
-              first_name: userData.first_name,
-              last_name: userData.last_name,
-              phone_number: userData.phone_number,
-              linkedin_profile: userData.linkedin_profile,
-              city: userData.city,
-              state: userData.state,
-              zip_code: userData.zip_code,
-              // You can update other fields as needed
-            });
-          })
-          .catch(error => {
-            console.error('Error fetching user data', error);
-          });
-      }
-    
+  
     handleChange = (e) => {
       const { name, value, type, files } = e.target;
   
@@ -71,8 +47,6 @@ class UserData extends Component {
   
     handleCVUpload = () => {
       this.setState({ isUploading: true });
-      if (localStorage.getItem('current') === null) {
-        this.props.history.push('/auth/signin');}
     
       // Check if a file is selected
       if (this.state.document) {
@@ -105,8 +79,6 @@ class UserData extends Component {
   
     handleSubmit = (e) => {
       e.preventDefault();
-      if (localStorage.getItem('current') === null) {
-        this.props.history.push('/auth/signin');}
   
       // Validate password strength
       if (this.state.password !== this.state.confirmPassword) {
@@ -139,13 +111,11 @@ class UserData extends Component {
         }
   
         axios
-          .patch(`http://localhost:8000/api/applicants/${localStorage.getItem('current')}/`, registrationData)
+          .post('http://localhost:8000/api/applicants/register/', registrationData)
           .then((response) => {
-            console.log('data updated successfully', response.data);
+            console.log('Registration successful', response.data);
             
-            localStorage.setItem('current', response.data.id);
-            
-            this.props.history.push('/public/job/list');
+            this.props.history.push('/auth/signin');
           })
           .catch((error) => {
             console.error('Registration error', error);
@@ -158,9 +128,8 @@ class UserData extends Component {
     render() {
         return (
             <Card>
-                <NavBar />
                 <Card.Body>
-                    <h5>update user data </h5>
+                    <h5>User Registration</h5>
                     <Form onSubmit={this.handleSubmit}>
                        
                                 <Form.Group controlId="username">
@@ -282,7 +251,7 @@ class UserData extends Component {
                         <input type="file" name="cv" onChange={this.handleChange} />
                         </Form.Group>
                         <Button onClick={this.handleCVUpload} disabled={this.state.isUploading}>Upload CV</Button>
-                        <Button type="submit" disabled={this.state.isUploading}>Update</Button>
+                        <Button type="submit" disabled={this.state.isUploading}>Register</Button>
                     </Form>
                 </Card.Body>
             </Card>
@@ -290,4 +259,4 @@ class UserData extends Component {
     }
 }
 
-export default withRouter(UserData);
+export default withRouter(Registration);
